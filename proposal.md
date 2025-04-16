@@ -1,4 +1,4 @@
-# CS30 major project 
+# Project Proposal: Base Defence 
 
 ## Disccription 
 I want to make a Game like Base Defense so the player has some characters and is playing aganst characters i haven't decided if i want it to be primarly defending or the player can attack too in which case they'll both have the same charackters
