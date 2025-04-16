@@ -4,7 +4,7 @@
 I want to make a Game like Base Defense so the player has some characters and is playing aganst characters i haven't decided if i want it to be primarly defending or the player can attack too in which case they'll both have the same charackters
 
 
-# Needs to have list
+## Needs to have list
 - Nice Background
 - Main menu
     - Play
@@ -21,7 +21,7 @@ I want to make a Game like Base Defense so the player has some characters and is
 - 
 
 
-#Nice to have
+## Nice to have
 - Sound Effects
 - Extra Maps and Playground
 - Extra Character;
