@@ -8,7 +8,7 @@ I want to make a Game like Plants vs Zombie so the player has some characters an
 - Main menu
 - Instructions
 - Characters
-- - this
+ - this
 - 
 - 
 - 
