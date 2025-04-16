@@ -1,14 +1,20 @@
 # CS30 major project 
 
 ## Disccription 
-Tell me what you're going to build....
+I want to make a Game like Plants vs Zombie so the player has some characters and is playing aganst characters i haven't decided if i want it to be primarly defending or the player can attack too in which case they'll both have the same charackters
 
 
 #Needs to have list
-- thing 1
-- thing 2
+- Main menu
+- Instructions
+- Characters
+- - this
+- 
+- 
+- 
+- 
 
 
 #Nice to have
-- somthing
-- other thing
+- Nice Background
+- Sound Effects
