@@ -1,7 +1,8 @@
 # Project Proposal: Base Defence 
 
 ## Disccription 
-I want to make a Game like Base Defense so the player has some characters and is playing aganst characters i haven't decided if i want it to be primarly defending or the player can attack too in which case they'll both have the same charackters
+I want to make a Game like Base Defense so the player has some characters and is playing aganst the same characters The goal is to defent your base while destroying you enemie's. 
+There will be diffrent characters with diffrent abilities you can chose from each with thier pros and cons.
 
 
 ## Needs to have list
@@ -11,10 +12,10 @@ I want to make a Game like Base Defense so the player has some characters and is
     - Instructions
 - PLayground with three Diffrent routs
 - Two Bases on each side of playground
-- Characters / abilities
-    - this
-    - 
-    - 
+- Characters / abilities / HP / coast
+    - Normal / Normal / 50 / 20
+    - Strong / Slow / 80Hp / 50
+    - Week / Fast / 50hp / 30
 - Coins to buy characters that raises over time
 - Health mechanic for characters and the base
 - 
@@ -25,9 +26,12 @@ I want to make a Game like Base Defense so the player has some characters and is
 - Sound Effects
 - Extra Maps and Playground
 - Extra Character;
+    - Strong / Fast / 5hp / 30
+    - 
+    - 
 - Cheat mode
 - Dropable Items
-- Power ups
+    - Power ups
 - 
 - 
 - 
