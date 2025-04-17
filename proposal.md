@@ -6,6 +6,7 @@ There will be diffrent characters with diffrent abilities you can chose from eac
 
 
 ## Needs to have list
+- Sound Effects
 - Nice Background
 - Main menu
     - Play
@@ -18,12 +19,11 @@ There will be diffrent characters with diffrent abilities you can chose from eac
     - Week / Fast / 50hp / 30
 - Coins to buy characters that raises over time
 - Health mechanic for characters and the base
-- 
+    - a number on top of them
 - 
 
 
 ## Nice to have
-- Sound Effects
 - Extra Maps and Playground
 - Extra Character;
     - Strong / Fast / 5hp / 30
@@ -32,6 +32,7 @@ There will be diffrent characters with diffrent abilities you can chose from eac
 - Cheat mode
 - Dropable Items
     - Power ups
+- a more appealing Health mechanic for characters and the base
 - 
 - 
 - 
