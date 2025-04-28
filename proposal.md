@@ -13,10 +13,10 @@ There will be diffrent characters with diffrent abilities you can chose from eac
     - Instructions
 - PLayground with three Diffrent routs
 - Two Bases on each side of playground
-- Characters / abilities / HP / coast
-    - Normal / Normal / 50 / 20
-    - Strong / Slow / 80Hp / 50
-    - Week / Fast / 50hp / 30
+- Characters / Hit  / Speed  /  Hp  / Cost
+    - Regular/ 10hp / Normal / 50hp / 20
+    - Bolder / 25hp / Slow   / 80Hp / 50
+    - Rusher / 7hp  / Fast   / 50hp / 30
 - Coins to buy characters that raises over time
 - Health mechanic for characters and the base
     - a number on top of them
@@ -26,14 +26,13 @@ There will be diffrent characters with diffrent abilities you can chose from eac
 ## Nice to have
 - Extra Maps and Playground
 - Extra Character;
-    - Strong / Fast / 5hp / 30
-    - 
+    - Saviour / 20hp / Fast   / 5hp  / 40
+    - Thrower  / 10hp / Normal / 30hp / 30
     - 
 - Cheat mode
 - Dropable Items
     - Power ups
 - a more appealing Health mechanic for characters and the base
-- 
-- 
-- 
-- 
+- A base diffender
+- Diffrent character skin for each base so they're diffrent 
+- Player being able to chose thier Character Skin

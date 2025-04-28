@@ -1,9 +1,29 @@
-// Project Title
-// Your Name
-// Date
+// Base Defence 
+// Kamaluddin Hashimy
+// TBD
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// need some time to think about it
+
+class Characters{
+  constructor(name, speed, strenght, health, file){
+    this.name = name;
+    this.speed = speed;
+    this.strenght = strenght;
+    this.health = health;
+    this.file = file;
+  }
+
+  display(){
+
+  }
+
+  move(){
+
+  }
+}
+
+// define all the characters
 
 
 function setup() {
