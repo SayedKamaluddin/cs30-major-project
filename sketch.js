@@ -23,11 +23,26 @@ class Characters{
   }
 }
 
+function helpPreload(file){
+  let character = [];
+  for(let images of file){
+    character += file+'/'+images;
+  }
+  return character;
+}
+
+// function preload(){
+//   ali = helpPreload('characters\bolder\blo1\Walking');
+// }
+
+
 // define all the characters
 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  let file = 'characters\bolder\blo1\Walking';
+  print(helpPreload(file));
 }
 
 function draw() {
