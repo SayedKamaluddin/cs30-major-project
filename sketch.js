@@ -23,10 +23,9 @@ class Character{
     this.frame = 1;
   }
 
-  idle(){
-    // print(this.frame, this.img.height*floor(this.frame));
-    image(this.img[0], 200, 100, 100, 100, this.img[0].height*floor(this.frame), 0, this.img[0].height);
-    if (this.frame*this.img[0].height > this.img[0].width){
+  action(imgNum){
+    image(this.img[imgNum], this.x, this.y, 100, 100, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
+    if (this.frame*this.img[imgNum].height > this.img[imgNum].width){
       this.frame = 1;
     }
     else{
@@ -34,15 +33,32 @@ class Character{
     }
   }
 
-  blink(){
-    image(this.img[1], 200, 100, 100, 100, this.img[1].height*floor(this.frame), 0, this.img[1].height);
-    if (this.frame*this.img[1].height > this.img[1].width){
-      this.frame = 1;
+  idle(){
+    let blink = random(100);
+    print(blink < 2);
+    if(blink < 2){
+      this.action(1);
     }
     else{
-      this.frame+=0.2;
+      this.action(0);
     }
+  }
+
+  walk(){
+    this.action(2);
     this.x += this.speed;
+  }
+  
+  slash(){
+    this.action(3);
+  }
+
+  throw(){
+    this.action(3);
+  }
+
+  die(){
+    this.action(4);
   }
 }
 
@@ -51,28 +67,24 @@ let filesToPreload = ['idle','blink','walk','slash','die'];
 let imgHeight = 100;
 
 //difine all characters
-let bolder;
+let bolder, runingBolder;
 let bolderImg = [];
 
-// function helpPreload(folderName,fileNUmber){
-//   bolderImg.push(loadImage('characters\\'+folderName+'\\'+fileNUmber+'\\idle.jpeg'));
-//   bolderImg.push(loadImage('characters\\'+folderName+'\\'+fileNUmber+'\\blink.jpeg'));
-//   bolderImg.push(loadImage('characters\\'+folderName+'\\'+fileNUmber+'\\walk.jpeg'));
-//   bolderImg.push(loadImage('characters\\'+folderName+'\\'+fileNUmber+'\\slash.jpeg'));
-//   bolderImg.push(loadImage('characters\\'+folderName+'\\'+fileNUmber+'\\throw.jpeg'));
-//   bolderImg.push(loadImage('characters\\'+folderName+'\\'+fileNUmber+'\\die.jpeg'));
-  
-// }
+function helpPreload(fileName, fileNUmber){
+  let imgList = [];
+  for(let file of filesToPreload){
+    imgList.push(loadImage('characters\\'+fileName+'\\'+fileNUmber+'\\'+file+'.jpeg'));
+  }
+  return imgList;
+}
 
 function preload(){
-  for(let file of filesToPreload){
-    bolderImg.push(loadImage('characters\\bolder\\1\\'+file+'.jpeg'));
-  }
+  bolderImg = helpPreload('bolder','1');
   
 }
 
 function runInSetup(){
-  bolder = new Character('Bolder', 2, 50, 100, bolderImg, width/2, height/2);
+  bolder = new Character('Bolder', 0.5, 50, 100, bolderImg, width/2, height/2);
 }
   
 function setup() {
@@ -82,7 +94,13 @@ function setup() {
 
 // let frame = 1;
 function draw() {
-  bolder.blink();
+  bolder.slash();
 
   
+}
+
+function mousePressed(){
+  print(bolder.x);
+  // bolder = new Character('Bolder', 2, 50, 100, bolderImg, width/2, height/2);
+
 }
