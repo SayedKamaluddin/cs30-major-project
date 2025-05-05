@@ -5,6 +5,20 @@
 // Extra for Experts:
 // need some time to think about it
 
+
+
+
+
+
+
+// take yesterdays work 
+
+
+
+
+
+
+
 class Character{
   constructor(name, speed, strenght, health, img, x, y){
     this.name = name;
@@ -62,15 +76,29 @@ class Character{
   }
 }
 
+class Maps {
+  constructor(paths) {
+    this.path = paths;
+  }
+
+
+}
 
 let filesToPreload = ['idle','blink','walk','slash','die'];
 let imgHeight = 100;
 
+
+
 //difine all characters
-let bolder, runingBolder;
+let allCharacters = {
+  bolderImg : [],
+};
+
+//
+let bolder;
 let bolderImg = [];
 
-function helpPreload(fileName, fileNUmber){
+function helpPreloadCharacters(fileName, fileNUmber){
   let imgList = [];
   for(let file of filesToPreload){
     imgList.push(loadImage('characters\\'+fileName+'\\'+fileNUmber+'\\'+file+'.jpeg'));
@@ -79,12 +107,15 @@ function helpPreload(fileName, fileNUmber){
 }
 
 function preload(){
-  bolderImg = helpPreload('bolder','1');
+  for (let characterImg in allCharacters){
+    // print(character);
+    characterImg = helpPreloadCharacters('bolder','1');
+  }
   
 }
 
 function runInSetup(){
-  bolder = new Character('Bolder', 0.5, 50, 100, bolderImg, width/2, height/2);
+  bolder = new Character('Bolder', 0.5, 50, 100, allCharacters.bolderImg, width/2, height/2);
 }
   
 function setup() {
@@ -95,8 +126,6 @@ function setup() {
 // let frame = 1;
 function draw() {
   bolder.slash();
-
-  
 }
 
 function mousePressed(){
