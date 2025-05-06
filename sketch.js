@@ -6,19 +6,6 @@
 // need some time to think about it
 
 
-
-
-
-
-
-// take yesterdays work 
-
-
-
-
-
-
-
 class Character{
   constructor(name, speed, strenght, health, img, x, y){
     this.name = name;
@@ -68,35 +55,37 @@ class Character{
   }
 
   throw(){
-    this.action(3);
+    this.action(4);
   }
 
   die(){
-    this.action(4);
+    this.action(5);
   }
 }
+
 
 class Maps {
   constructor(paths) {
     this.path = paths;
   }
-
-
 }
 
-let filesToPreload = ['idle','blink','walk','slash','die'];
+
+let filesToPreload = ['idle','blink','walk','slash','throw','die'];
 let imgHeight = 100;
 
 
-
-//difine all characters
+//difine all characters images
 let allCharacters = {
-  bolderImg : [],
+  bolder : "",
 };
 
-//
-let bolder;
-let bolderImg = [];
+
+//difine all characters images
+let allCharactersImgs = {
+  bolder : [],
+};
+
 
 function helpPreloadCharacters(fileName, fileNUmber){
   let imgList = [];
@@ -106,30 +95,33 @@ function helpPreloadCharacters(fileName, fileNUmber){
   return imgList;
 }
 
+
 function preload(){
-  for (let characterImg in allCharacters){
-    // print(character);
-    characterImg = helpPreloadCharacters('bolder','1');
+  for (let characterImg in allCharactersImgs){
+    allCharacters[characterImg] = helpPreloadCharacters(characterImg,'1');
   }
   
 }
 
+
 function runInSetup(){
-  bolder = new Character('Bolder', 0.5, 50, 100, allCharacters.bolderImg, width/2, height/2);
+  for(let character in allCharacters){
+    allCharacters[character] = new Character(character, 0.5, 50, 100, allCharactersImgs[character], width/2, height/2);
+  }
 }
   
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   runInSetup();
 }
 
-// let frame = 1;
+
 function draw() {
-  bolder.slash();
+  allCharacters.bolder.slash();
 }
 
+
 function mousePressed(){
-  print(bolder.x);
-  // bolder = new Character('Bolder', 2, 50, 100, bolderImg, width/2, height/2);
 
 }
