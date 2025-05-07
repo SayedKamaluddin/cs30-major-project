@@ -71,26 +71,25 @@ class Maps {
 }
 
 
-let filesToPreload = ['idle','blink','walk','slash','throw','die'];
+let characterActionsToPreload = ['idle','blink','walk','slash','throw','die'];
 let imgHeight = 100;
 
 
-//difine all characters images
-let allCharacters = {
+let maps = { //defining all the maps
+  greenland : '',
+};
+let allCharacters = { //difine all characters
   bolder : "",
 };
-
-
-//difine all characters images
-let allCharactersImgs = {
+let allCharactersImgs = {  //difine all characters images
   bolder : [],
 };
 
 
 function helpPreloadCharacters(fileName, fileNUmber){
   let imgList = [];
-  for(let file of filesToPreload){
-    imgList.push(loadImage('characters\\'+fileName+'\\'+fileNUmber+'\\'+file+'.jpeg'));
+  for(let file of characterActionsToPreload){
+    imgList.push(loadImage('characters\\'+fileName+'\\'+fileNUmber+'\\'+file+'.png'));
   }
   return imgList;
 }
@@ -98,9 +97,12 @@ function helpPreloadCharacters(fileName, fileNUmber){
 
 function preload(){
   for (let characterImg in allCharactersImgs){
-    allCharacters[characterImg] = helpPreloadCharacters(characterImg,'1');
+    allCharactersImgs[characterImg] = helpPreloadCharacters(characterImg,'1');
   }
-  
+  for (let map in maps){
+    maps[map] = loadImage('maps\\'+map+'.png');
+  }
+  print(maps.greenland);
 }
 
 
@@ -113,12 +115,15 @@ function runInSetup(){
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  imageMode(CENTER);
   runInSetup();
+  
 }
 
 
 function draw() {
-  allCharacters.bolder.slash();
+  image(maps.greenland, width/2, height/2, width, height);
+  allCharacters.bolder.walk();
 }
 
 
