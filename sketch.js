@@ -24,10 +24,14 @@ class Character{
     this.frame = 1;
   }
 
+  showHealth(){
+    
+  }
+
   action(imgNum){
     image(this.img[imgNum], this.x, this.y, 100, 100, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
     if (this.frame*this.img[imgNum].height > this.img[imgNum].width){
-      this.frame = 1;
+      this.frame = 0;
     }
     else{
       this.frame+=0.2;
@@ -35,16 +39,13 @@ class Character{
   }
 
   idle(){
-    let blink = random(100);
-    print(blink < 2);
-    if(blink < 2){
-      this.action(1);
-    }
-    else{
-      this.action(0);
-    }
+    this.action(0);
   }
 
+  blink(){
+    this.action(1);
+  }
+  
   walk(){
     this.action(2);
     this.x += this.speed;
@@ -123,10 +124,14 @@ function setup() {
 
 function draw() {
   image(maps.greenland, width/2, height/2, width, height);
-  allCharacters.bolder.walk();
+  if (dist(allCharacters.bolder.x, allCharacters.bolder.y, mouseX, mouseY)<25 ){
+    allCharacters.bolder.slash();
+  }
+  else{
+    allCharacters.bolder.idle();
+  }
 }
 
 
 function mousePressed(){
-
 }
