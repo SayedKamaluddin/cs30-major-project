@@ -76,6 +76,33 @@ class Maps {
 }
 
 
+class TheGame{
+  constructor(mode, level){
+    this.mode = mode;
+    this.level = level;
+    this.baseHealth = 1000;
+    this.coins = 0;
+    this.counter = millis();
+  }
+
+  checkMode(){
+    if (this.mode === 'normal'){
+      this.startNormalGame();
+    }
+  }
+
+  startNormalGame(){
+    if(this.counter%500 === 0){
+      this.coins++;
+    }
+    textSize(10);
+    text(this.coins,50,50);
+
+  }
+
+}
+
+let game;
 let characterActionsToPreload = ['idle','blink','walk','slash','throw','die'];
 let imgHeight = 100;
 
@@ -124,7 +151,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   imageMode(CENTER);
   runInSetup();
-  
+  game = new TheGame('normal', 10);
 }
 
 
@@ -141,6 +168,7 @@ function draw() {
   else{
     allCharacters.bolder.idle();
   }
+  
 }
 
 
