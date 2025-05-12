@@ -92,11 +92,12 @@ class TheGame{
   }
 
   startNormalGame(){
-    if(this.counter%500 === 0){
+    if(millis()%500 === 0){
       this.coins++;
     }
     textSize(10);
     text(this.coins,50,50);
+    print(millis()%500);
 
   }
 
@@ -168,7 +169,8 @@ function draw() {
   else{
     allCharacters.bolder.idle();
   }
-  
+  game.checkMode();
+  print(millis());
 }
 
 
