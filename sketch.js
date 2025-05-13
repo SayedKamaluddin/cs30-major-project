@@ -25,11 +25,11 @@ class Character{
 
   action(imgNum){
     image(this.img[imgNum], this.x, this.y, 100, 100, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
-    if (this.frame*this.img[imgNum].height > this.img[imgNum].width){
-      this.frame = 0;
+    if (this.frame*this.img[imgNum].height > this.img[imgNum].width-100){
+      this.frame = 1;
     }
     else{
-      this.frame+=0.2;
+      this.frame+=0.25;
     }
   }
 
@@ -92,12 +92,13 @@ class TheGame{
   }
 
   startNormalGame(){
-    if(millis()%500 === 0){
+    if(millis()>this.counter+1000){
       this.coins++;
+      this.counter = millis();
     }
-    textSize(10);
+    textSize(50);
     text(this.coins,50,50);
-    print(millis()%500);
+    // print(millis()%500);
 
   }
 
@@ -113,6 +114,7 @@ let maps = { //defining all the maps
 };
 let allCharacters = { //difine all characters
   bolder : "",
+  
 };
 let allCharactersImgs = {  //difine all characters images
   bolder : [],
@@ -163,14 +165,14 @@ function eneamyBolder(){
 
 function draw() {
   image(maps.greenland, width/2, height/2, width, height);
-  if (dist(allCharacters.bolder.x, allCharacters.bolder.y, mouseX, mouseY)<25 ){
+  if (dist(allCharacters.bolder.x, allCharacters.bolder.y, mouseX, mouseY)<50 ){
     allCharacters.bolder.slash();
   }
   else{
     allCharacters.bolder.idle();
   }
   game.checkMode();
-  print(millis());
+  // print(millis());
 }
 
 
