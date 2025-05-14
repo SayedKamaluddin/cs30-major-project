@@ -25,13 +25,25 @@ class Character{
 
   action(imgNum){
     image(this.img[imgNum], this.x, this.y, 100, 100, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
-    if (this.frame*this.img[imgNum].height > this.img[imgNum].width-100){
+    print(this.img[imgNum].height*floor(this.frame));
+    if (this.frame*this.img[imgNum].height > this.img[imgNum].width-this.img[imgNum].height){
       this.frame = 1;
     }
     else{
       this.frame+=0.25;
     }
   }
+
+  // action(imgNum){
+  //   image(this.img[imgNum], this.x, this.y, 100, 100, this.img[imgNum].height+floor(this.frame), 0, this.img[imgNum].height);
+  //   print(this.img[imgNum].height+floor(this.frame));
+  //   if (this.img[imgNum].height > this.img[imgNum].width){
+  //     this.frame = 1;
+  //   }
+  //   else{
+  //     this.frame+=5;
+  //   }
+  // }
 
   idle(){
     this.action(0);
@@ -85,6 +97,26 @@ class TheGame{
     this.counter = millis();
   }
 
+  displayCharactersToSelect(){
+    for(let character in allCharacters){
+      if (dist(allCharacters[character].x, allCharacters[character].y, mouseX, mouseY)<50 ){
+        allCharacters[character].blink();
+      }
+      else{
+        allCharacters[character].idle();
+      }
+    }
+  }
+
+  coinCounter(){
+    if(millis()>this.counter+1000){
+      this.coins++;
+      this.counter = millis();
+    }
+    textSize(50);
+    text(this.coins,25,50);
+  }
+
   checkMode(){
     if (this.mode === 'normal'){
       this.startNormalGame();
@@ -92,12 +124,8 @@ class TheGame{
   }
 
   startNormalGame(){
-    if(millis()>this.counter+1000){
-      this.coins++;
-      this.counter = millis();
-    }
-    textSize(50);
-    text(this.coins,50,50);
+    this.displayCharactersToSelect();
+    this.coinCounter();
     // print(millis()%500);
 
   }
@@ -112,12 +140,15 @@ let imgHeight = 100;
 let maps = { //defining all the maps
   greenland : '',
 };
+
 let allCharacters = { //difine all characters
   bolder : "",
-  
+  goblin : "",
 };
+
 let allCharactersImgs = {  //difine all characters images
   bolder : [],
+  goblin : [],
 };
 
 
@@ -137,15 +168,14 @@ function preload(){
   for (let map in maps){
     maps[map] = loadImage('maps\\'+map+'.png');
   }
-  topleft = loadImage('maps\\leftcharplace.png');
-  topright = loadImage('maps\\rightcharplace.png');
-
 }
 
 
 function runInSetup(){
+  let space = 150;
   for(let character in allCharacters){
-    allCharacters[character] = new Character(character, 0.5, 50, 100, allCharactersImgs[character], width/2, height/2);
+    allCharacters[character] = new Character(character, 0.5, 50, 100, allCharactersImgs[character], space, 50, 'r');
+    space+=100;
   }
 }
   
@@ -158,19 +188,13 @@ function setup() {
 }
 
 
-function eneamyBolder(){
-  
-}
-
-
 function draw() {
   image(maps.greenland, width/2, height/2, width, height);
-  if (dist(allCharacters.bolder.x, allCharacters.bolder.y, mouseX, mouseY)<50 ){
-    allCharacters.bolder.slash();
-  }
-  else{
-    allCharacters.bolder.idle();
-  }
+  // if (dist(allCharacters.bolder.x, allCharacters.bolder.y, mouseX, mouseY)<50 ){
+  // }
+  // else{
+  //   allCharacters.bolder.idle();
+  // }
   game.checkMode();
   // print(millis());
 }
@@ -178,3 +202,10 @@ function draw() {
 
 function mousePressed(){
 }
+
+
+function eneamyBolder(){
+  
+}
+
+
