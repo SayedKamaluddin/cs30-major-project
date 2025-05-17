@@ -7,8 +7,9 @@
 
 
 class Character{
-  constructor(name, speed, strenght, health, img, x, y, diraction){
+  constructor(name, size, speed, strenght, health, img, x, y, diraction){
     this.name = name;
+    this.size = size;
     this.speed = speed;
     this.strenght = strenght;
     this.health = health;
@@ -24,26 +25,14 @@ class Character{
   }
 
   action(imgNum){
-    image(this.img[imgNum], this.x, this.y, 100, 100, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
-    print(this.img[imgNum].height*floor(this.frame));
+    image(this.img[imgNum], this.x, this.y, this.size, this.size, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
     if (this.frame*this.img[imgNum].height > this.img[imgNum].width-this.img[imgNum].height){
       this.frame = 1;
     }
     else{
-      this.frame+=0.25;
+      this.frame += this.speed-0.1;
     }
   }
-
-  // action(imgNum){
-  //   image(this.img[imgNum], this.x, this.y, 100, 100, this.img[imgNum].height+floor(this.frame), 0, this.img[imgNum].height);
-  //   print(this.img[imgNum].height+floor(this.frame));
-  //   if (this.img[imgNum].height > this.img[imgNum].width){
-  //     this.frame = 1;
-  //   }
-  //   else{
-  //     this.frame+=5;
-  //   }
-  // }
 
   idle(){
     this.action(0);
@@ -99,8 +88,8 @@ class TheGame{
 
   displayCharactersToSelect(){
     for(let character in allCharacters){
-      if (dist(allCharacters[character].x, allCharacters[character].y, mouseX, mouseY)<50 ){
-        allCharacters[character].blink();
+      if (dist(allCharacters[character].x, allCharacters[character].y, mouseX, mouseY)<allCharacters[character].size/3){
+        allCharacters[character].slash();
       }
       else{
         allCharacters[character].idle();
@@ -117,23 +106,22 @@ class TheGame{
     text(this.coins,25,50);
   }
 
+  startNormalGame(){
+    this.displayCharactersToSelect();
+    this.coinCounter();
+  }
+
   checkMode(){
     if (this.mode === 'normal'){
       this.startNormalGame();
     }
   }
 
-  startNormalGame(){
-    this.displayCharactersToSelect();
-    this.coinCounter();
-    // print(millis()%500);
-
-  }
 
 }
 
 let game;
-let characterActionsToPreload = ['idle','blink','walk','slash','throw','die'];
+let characterActionsToPreload = ['idle','idleblinking','walk','slash','throw','die'];
 let imgHeight = 100;
 
 
@@ -142,20 +130,22 @@ let maps = { //defining all the maps
 };
 
 let allCharacters = { //difine all characters
-  bolder : "",
+  bolder1 : "",
+  bolder2 : "",
   goblin : "",
 };
 
 let allCharactersImgs = {  //difine all characters images
-  bolder : [],
+  bolder1 : [],
+  bolder2 : [],
   goblin : [],
 };
 
 
-function helpPreloadCharacters(fileName, fileNUmber){
+function helpPreloadCharacters(fileName){
   let imgList = [];
   for(let file of characterActionsToPreload){
-    imgList.push(loadImage('characters\\'+fileName+'\\'+fileNUmber+'\\'+file+'.png'));
+    imgList.push(loadImage('characters\\'+fileName+'\\'+file+'.png'));
   }
   return imgList;
 }
@@ -163,7 +153,7 @@ function helpPreloadCharacters(fileName, fileNUmber){
 
 function preload(){
   for (let characterImg in allCharactersImgs){
-    allCharactersImgs[characterImg] = helpPreloadCharacters(characterImg,'1');
+    allCharactersImgs[characterImg] = helpPreloadCharacters(characterImg);
   }
   for (let map in maps){
     maps[map] = loadImage('maps\\'+map+'.png');
@@ -174,7 +164,7 @@ function preload(){
 function runInSetup(){
   let space = 150;
   for(let character in allCharacters){
-    allCharacters[character] = new Character(character, 0.5, 50, 100, allCharactersImgs[character], space, 50, 'r');
+    allCharacters[character] = new Character(character, 100, 0.4, 50, 100, allCharactersImgs[character], space, 50, 'r');
     space+=100;
   }
 }
@@ -190,22 +180,10 @@ function setup() {
 
 function draw() {
   image(maps.greenland, width/2, height/2, width, height);
-  // if (dist(allCharacters.bolder.x, allCharacters.bolder.y, mouseX, mouseY)<50 ){
-  // }
-  // else{
-  //   allCharacters.bolder.idle();
-  // }
   game.checkMode();
-  // print(millis());
 }
 
 
 function mousePressed(){
 }
-
-
-function eneamyBolder(){
-  
-}
-
 
