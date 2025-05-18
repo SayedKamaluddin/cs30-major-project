@@ -89,7 +89,7 @@ class TheGame{
   displayCharactersToSelect(){
     for(let character in allCharacters){
       if (dist(allCharacters[character].x, allCharacters[character].y, mouseX, mouseY)<allCharacters[character].size/3){
-        allCharacters[character].slash();
+        allCharacters[character].blink();
       }
       else{
         allCharacters[character].idle();
@@ -132,12 +132,14 @@ let maps = { //defining all the maps
 let allCharacters = { //difine all characters
   bolder1 : "",
   bolder2 : "",
+  bolder3 : "",
   goblin : "",
 };
 
 let allCharactersImgs = {  //difine all characters images
   bolder1 : [],
   bolder2 : [],
+  bolder3 : [],
   goblin : [],
 };
 
@@ -164,7 +166,7 @@ function preload(){
 function runInSetup(){
   let space = 150;
   for(let character in allCharacters){
-    allCharacters[character] = new Character(character, 100, 0.4, 50, 100, allCharactersImgs[character], space, 50, 'r');
+    allCharacters[character] = new Character(character, 100, 0.35, 50, 100, allCharactersImgs[character], space, 50, 'r');
     space+=100;
   }
 }
@@ -181,9 +183,13 @@ function setup() {
 function draw() {
   image(maps.greenland, width/2, height/2, width, height);
   game.checkMode();
+  if (mouseIsPressed){
+    for(let character in allCharacters){
+      if (dist(allCharacters[character].x, allCharacters[character].y, mouseX, mouseY)<allCharacters[character].size/3){
+        allCharacters[character].x = mouseX;
+        allCharacters[character].y = mouseY;
+      }
+    }
+  }
+
 }
-
-
-function mousePressed(){
-}
-
