@@ -123,6 +123,9 @@ class TheGame{
 let game;
 let characterActionsToPreload = ['idle','idleblinking','walk','slash','throw','die'];
 let imgHeight = 100;
+let ogX = 0;
+let ogY = 0;
+let drag = 0;
 
 
 let maps = { //defining all the maps
@@ -183,13 +186,38 @@ function setup() {
 function draw() {
   image(maps.greenland, width/2, height/2, width, height);
   game.checkMode();
-  if (mouseIsPressed){
-    for(let character in allCharacters){
-      if (dist(allCharacters[character].x, allCharacters[character].y, mouseX, mouseY)<allCharacters[character].size/3){
-        allCharacters[character].x = mouseX;
-        allCharacters[character].y = mouseY;
-      }
+  if (drag !== 0){
+    console.log(drag);
+    console.log(allCharacters);
+    allCharacters[drag].x = mouseX;
+    allCharacters[drag].y = mouseY;
+  }
+}
+
+
+function mousePressed(){
+  for(let character in allCharacters){
+    if (dist(allCharacters[character].x, allCharacters[character].y, mouseX, mouseY)<allCharacters[character].size/3){
+      drag = character;
+      ogX = allCharacters[drag].x;
+      ogY = allCharacters[drag].y;
     }
   }
-
 }
+
+
+function mouseReleased(){
+  if (drag !== 0){
+    allCharacters[drag].x = ogX;
+    allCharacters[drag].y = ogY;
+    ogX = 0;
+    ogY = 0;
+    drag = 0;
+    
+
+    // does not work
+    // allCharacters[drag+2] = new Character(drag,150,3,50,100,drag+'Img',mouseX,mouseY,'r');
+  
+  }
+}
+
