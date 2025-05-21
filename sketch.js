@@ -7,8 +7,8 @@
 
 
 class Character{
-  constructor(name, size, speed, strenght, health, img, x, y, diraction){
-    this.name = name;
+  constructor(price, size, speed, strenght, health, img, x, y, diraction){
+    this.price = price;
     this.size = size;
     this.speed = speed;
     this.strenght = strenght;
@@ -87,13 +87,26 @@ class TheGame{
   }
 
   displayCharactersToSelect(){
-    for(let character in allCharacters){
+    for(let character = 0; character < allCharacters.length; character++){
       if (dist(allCharacters[character].x, allCharacters[character].y, mouseX, mouseY)<allCharacters[character].size/3){
         allCharacters[character].blink();
       }
       else{
         allCharacters[character].idle();
       }
+    }
+  }
+
+  gameAction(){
+    for(let character = 0; character < actionCharacters.length; character++){
+      actionCharacters[character].walk();
+
+      // if (dist(actionCharacters[character].x, actionCharacters[character].y, mouseX, mouseY)<actionCharacters[character].size/3){
+      // actionCharacters[character].blink();
+      // }
+      // else{
+      //   actionCharacters[character].idle();
+      // }
     }
   }
 
@@ -109,6 +122,7 @@ class TheGame{
   startNormalGame(){
     this.displayCharactersToSelect();
     this.coinCounter();
+    this.gameAction();
   }
 
   checkMode(){
@@ -123,28 +137,20 @@ class TheGame{
 let game;
 let characterActionsToPreload = ['idle','idleblinking','walk','slash','throw','die'];
 let imgHeight = 100;
-let ogX = 0;
-let ogY = 0;
-let drag = 0;
+let ogY = 'empty';//using empty becouse 0 was a needed value
+let ogX = 'empty';//using empty becouse 0 was a needed value
+let drag = 'empty';//using empty becouse 0 was a needed value
 
 
 let maps = { //defining all the maps
   greenland : '',
 };
 
-let allCharacters = { //difine all characters
-  bolder1 : "",
-  bolder2 : "",
-  bolder3 : "",
-  goblin : "",
-};
 
-let allCharactersImgs = {  //difine all characters images
-  bolder1 : [],
-  bolder2 : [],
-  bolder3 : [],
-  goblin : [],
-};
+let characterImagesToPreload = ['bolder1', 'bolder2', 'bolder3', 'goblin'];
+let allCharacters = []; //store all characters
+let actionCharacters = []; //store all characters
+let allCharactersImgs = [];  //difine all characters images
 
 
 function helpPreloadCharacters(fileName){
@@ -157,8 +163,8 @@ function helpPreloadCharacters(fileName){
 
 
 function preload(){
-  for (let characterImg in allCharactersImgs){
-    allCharactersImgs[characterImg] = helpPreloadCharacters(characterImg);
+  for (let characterImg of characterImagesToPreload){
+    allCharactersImgs.push(helpPreloadCharacters(characterImg));
   }
   for (let map in maps){
     maps[map] = loadImage('maps\\'+map+'.png');
@@ -168,8 +174,8 @@ function preload(){
 
 function runInSetup(){
   let space = 150;
-  for(let character in allCharacters){
-    allCharacters[character] = new Character(character, 100, 0.35, 50, 100, allCharactersImgs[character], space, 50, 'r');
+  for(let character in allCharactersImgs){
+    allCharacters.push(new Character(0, 100, 0.35, 50, 100, allCharactersImgs[character], space, 50, 'r'));
     space+=100;
   }
 }
@@ -186,9 +192,7 @@ function setup() {
 function draw() {
   image(maps.greenland, width/2, height/2, width, height);
   game.checkMode();
-  if (drag !== 0){
-    console.log(drag);
-    console.log(allCharacters);
+  if (drag !== 'empty'){
     allCharacters[drag].x = mouseX;
     allCharacters[drag].y = mouseY;
   }
@@ -207,17 +211,15 @@ function mousePressed(){
 
 
 function mouseReleased(){
-  if (drag !== 0){
+  if (drag !== 'empty'){
     allCharacters[drag].x = ogX;
     allCharacters[drag].y = ogY;
-    ogX = 0;
-    ogY = 0;
-    drag = 0;
     
-
-    // does not work
-    // allCharacters[drag+2] = new Character(drag,150,3,50,100,drag+'Img',mouseX,mouseY,'r');
-  
+    actionCharacters.push(new Character(0 ,150,2,50,100,allCharactersImgs[drag],mouseX,mouseY,'r'));
+    
+    ogX = 'empty';
+    ogY = 'empty';
+    drag = 'empty';
   }
 }
 
