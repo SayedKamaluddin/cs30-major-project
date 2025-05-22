@@ -30,7 +30,7 @@ class Character{
       this.frame = 1;
     }
     else{
-      this.frame += this.speed-0.1;
+      this.frame += this.speed-0.2;
     }
   }
 
@@ -99,10 +99,16 @@ class TheGame{
 
   gameAction(){
     for(let character = 0; character < actionCharacters.length; character++){
-      actionCharacters[character].walk();
+      
+      if (actionCharacters[character].x > width-200 || actionCharacters[character].x < 0){
+        actionCharacters[character].blink();
+      }
+      else{
+        actionCharacters[character].walk();
+      }
 
       // if (dist(actionCharacters[character].x, actionCharacters[character].y, mouseX, mouseY)<actionCharacters[character].size/3){
-      // actionCharacters[character].blink();
+      //   actionCharacters[character].blink();
       // }
       // else{
       //   actionCharacters[character].idle();
@@ -146,8 +152,13 @@ let maps = { //defining all the maps
   greenland : '',
 };
 
-
-let characterImagesToPreload = ['bolder1', 'bolder2', 'bolder3', 'goblin'];
+//                                       price, size, speed, strenght, health,
+let characterImagesToPreloadAndSpicifcs = [
+  ['bolder1', [25, 150, 0.3, 50, 500]],
+  // ['bolder2'],
+  // ['bolder3'],
+  ['goblin' [5, 100, 0.6, 15, 100]]
+];
 let allCharacters = []; //store all characters
 let actionCharacters = []; //store all characters
 let allCharactersImgs = [];  //difine all characters images
@@ -163,8 +174,8 @@ function helpPreloadCharacters(fileName){
 
 
 function preload(){
-  for (let characterImg of characterImagesToPreload){
-    allCharactersImgs.push(helpPreloadCharacters(characterImg));
+  for (let characterImg of characterImagesToPreloadAndSpicifcs){
+    allCharactersImgs.push(helpPreloadCharacters(characterImg[0]));
   }
   for (let map in maps){
     maps[map] = loadImage('maps\\'+map+'.png');
@@ -215,7 +226,7 @@ function mouseReleased(){
     allCharacters[drag].x = ogX;
     allCharacters[drag].y = ogY;
     
-    actionCharacters.push(new Character(0 ,150,2,50,100,allCharactersImgs[drag],mouseX,mouseY,'r'));
+    actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],mouseX,mouseY,'r'));
     
     ogX = 'empty';
     ogY = 'empty';
