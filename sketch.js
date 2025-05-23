@@ -78,12 +78,15 @@ class Maps {
 
 
 class TheGame{
-  constructor(mode, level){
-    this.mode = mode;
-    this.level = level;
+  constructor(){
+    this.mode = 'normal';
+    this.level = 1;
     this.baseHealth = 1000;
     this.coins = 0;
     this.counter = millis();
+
+
+
   }
 
   displayCharactersToSelect(){
@@ -131,9 +134,28 @@ class TheGame{
     this.gameAction();
   }
 
-  checkMode(){
-    if (this.mode === 'normal'){
+  mainMenu(){
+    textAlign(CENTER);
+    textSize(100);
+    let will = text('Welcome to The Game', width/2, height/3);
+    textSize(50);
+    let normal = text('Normal Game', width/2, height/4*2);
+    textSize(50);
+    let cheat = text('Cheat Mode', width/2, height/5*3);
+  }
+
+  checkMods(){
+    if (this.mode === 'menu'){
+      this.mainMenu();
+    }
+    else if (this.mode === 'normal'){
       this.startNormalGame();
+    }
+    else if (this.mode === 'cheat'){
+      this.startCheatGame();
+    }
+    else if (this.mode === 'controls'){
+      this.controlPage();
     }
   }
 
@@ -157,7 +179,7 @@ let characterImagesToPreloadAndSpicifcs = [
   ['bolder1', [25, 150, 0.3, 50, 500]],
   // ['bolder2'],
   // ['bolder3'],
-  ['goblin' [5, 100, 0.6, 15, 100]]
+  ['goblin', [5, 100, 0.6, 15, 100]]
 ];
 let allCharacters = []; //store all characters
 let actionCharacters = []; //store all characters
@@ -196,19 +218,20 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   imageMode(CENTER);
   runInSetup();
-  game = new TheGame('normal', 10);
+  game = new TheGame();
 }
 
 
 function draw() {
   image(maps.greenland, width/2, height/2, width, height);
-  game.checkMode();
+  game.checkMods();
   if (drag !== 'empty'){
     allCharacters[drag].x = mouseX;
     allCharacters[drag].y = mouseY;
   }
 }
 
+let another;
 
 function mousePressed(){
   for(let character in allCharacters){
@@ -226,7 +249,9 @@ function mouseReleased(){
     allCharacters[drag].x = ogX;
     allCharacters[drag].y = ogY;
     
-    actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],mouseX,mouseY,'r'));
+    actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2,'r'));
+    actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width,height/2,'l'));
+
     
     ogX = 'empty';
     ogY = 'empty';
