@@ -89,6 +89,7 @@ class TheGame{
     this.level = 1;
     this.baseHealth = 1000;
     this.coins = 0;
+    this.enemyCoins = 0;
     this.counter = millis();
 
 
@@ -107,17 +108,20 @@ class TheGame{
   }
 
   gameAction(){
-    for(let character = 0; character < actionCharacters.length; character++){
-      if (actionCharacters[character].x > width-100 || actionCharacters[character].x < 100){
-        actionCharacters[character].slash();
+    for(let character = 0; character < actionRCharacters.length; character++){
+      if (actionRCharacters[character].x > width-100 || actionRCharacters[character].x < 100){
+        actionRCharacters[character].blink();
       }
       else{
-        for(let enamy = 0; enamy < actionCharacters.length; enamy++){
-          if (actionCharacters[enamy].diraction === "l" && dist(actionCharacters[character].x, actionCharacters[character].y, actionCharacters[enamy].x, actionCharacters[enamy].y,)<actionCharacters[character].size/3){
-            actionCharacters[character].slash();
+        // actionCharacters[character].walk();
+        for(let enamy = 0; enamy < actionLCharacters.length; enamy++){
+          if (dist(actionRCharacters[character].x, actionRCharacters[character].y, actionLCharacters[enamy].x, actionLCharacters[enamy].y,)<actionRCharacters[character].size/2){
+            actionRCharacters[character].slash();
+            actionLCharacters[enamy].slash();
           }
           else{
-            actionCharacters[character].walk();
+            actionRCharacters[character].walk();
+            actionLCharacters[enamy].walk();
           }
         }
       }
@@ -127,6 +131,7 @@ class TheGame{
   coinCounter(){
     if(millis()>this.counter+1000){
       this.coins++;
+      this.enemyCoins++;
       this.counter = millis();
     }
     textSize(50);
@@ -187,7 +192,8 @@ let characterImagesToPreloadAndSpicifcs = [
   ['goblin', [5, 100, 0.6, 15, 100]]
 ];
 let allCharacters = []; //store all characters
-let actionCharacters = []; //store all characters
+let actionLCharacters = []; //store all characters
+let actionRCharacters = []; //store all characters
 let allCharactersImgs = [];  //difine all characters images
 
 
@@ -254,9 +260,9 @@ function mouseReleased(){
     allCharacters[drag].x = ogX;
     allCharacters[drag].y = ogY;
     
-    actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2,'r'));
-    actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2,'l'));
-
+    actionRCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2,'r'));
+    actionLCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2,'l'));
+    // print(actionCharacters);
     
     ogX = 'empty';
     ogY = 'empty';
