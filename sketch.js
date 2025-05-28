@@ -108,24 +108,75 @@ class TheGame{
   }
 
   gameAction(){
-    for(let character = 0; character < actionRCharacters.length; character++){
-      if (actionRCharacters[character].x > width-100 || actionRCharacters[character].x < 100){
-        actionRCharacters[character].blink();
+    if (actionLCharacters.length !== 0 ){
+      // let useless;
+      if (actionRCharacters[0].x > width-100 || actionRCharacters[0].x < 100){
+        actionRCharacters[0].blink();
       }
       else{
-        // actionCharacters[character].walk();
-        for(let enamy = 0; enamy < actionLCharacters.length; enamy++){
-          if (dist(actionRCharacters[character].x, actionRCharacters[character].y, actionLCharacters[enamy].x, actionLCharacters[enamy].y,)<actionRCharacters[character].size/2){
-            actionRCharacters[character].slash();
-            actionLCharacters[enamy].slash();
-          }
-          else{
-            actionRCharacters[character].walk();
-            actionLCharacters[enamy].walk();
-          }
+        if (dist(actionRCharacters[0].x, actionRCharacters[0].y, actionLCharacters[0].x, actionLCharacters[0].y,)<actionRCharacters[0].size/2){
+          actionRCharacters[0].slash();
+        }
+        else{
+          actionRCharacters[0].walk();
         }
       }
+      if (actionLCharacters[0].x > width-100 || actionLCharacters[0].x < 100){
+        actionRCharacters[0].blink();
+      }
+      else{
+        if (dist(actionRCharacters[0].x, actionRCharacters[0].y, actionLCharacters[0].x, actionLCharacters[0].y,)<actionRCharacters[0].size/2){
+          actionLCharacters[0].slash();
+        }
+        else{
+          actionLCharacters[0].walk();
+        }
+      }
+    };
+    if (actionRCharacters.length === 2 ){
+      print(actionRCharacters.length);
+      actionRCharacters[1].blink();
+      actionLCharacters[1].blink();
     }
+    
+
+
+    // for(let character = 0; character < actionRCharacters.length; character++){
+    //   if (actionRCharacters[character].x > width-100 || actionRCharacters[character].x < 100){
+    //     actionRCharacters[character].blink();
+    //   }
+    //   else{
+    //     // actionCharacters[character].walk();
+    //     for(let enamy = 0; enamy < actionLCharacters.length; enamy++){
+    //       if (dist(actionRCharacters[character].x, actionRCharacters[character].y, actionLCharacters[enamy].x, actionLCharacters[enamy].y,)<actionRCharacters[character].size/2){
+    //         actionRCharacters[character].slash();
+    //         // actionLCharacters[enamy].slash();
+    //       }
+    //       else{
+    //         actionRCharacters[character].walk();
+    //         // actionLCharacters[enamy].walk();
+    //       }
+    //     }
+    //   }
+    // }
+    // for(let character = 0; character < actionLCharacters.length; character++){
+    //   if (actionRCharacters[character].x > width-100 || actionRCharacters[character].x < 100){
+    //     actionRCharacters[character].blink();
+    //   }
+    //   else{
+    //     // actionCharacters[character].walk();
+    //     for(let enamy = 0; enamy < actionRCharacters.length; enamy++){
+    //       if (dist(actionRCharacters[character].x, actionRCharacters[character].y, actionLCharacters[enamy].x, actionLCharacters[enamy].y,)<actionRCharacters[character].size/2){
+    //         // actionRCharacters[character].slash();
+    //         actionLCharacters[enamy].slash();
+    //       }
+    //       else{
+    //         // actionRCharacters[character].walk();
+    //         actionLCharacters[enamy].walk();
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   coinCounter(){
@@ -147,7 +198,7 @@ class TheGame{
   mainMenu(){
     textAlign(CENTER);
     textSize(100);
-    let will = text('Welcome to The Game', width/2, height/3);
+    let wlc = text('Welcome to The Game', width/2, height/3);
     textSize(50);
     let normal = text('Normal Game', width/2, height/4*2);
     textSize(50);
