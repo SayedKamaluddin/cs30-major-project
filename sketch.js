@@ -28,7 +28,7 @@ class Character{
     if (this.diraction === 'r'){
       image(this.img[imgNum], this.x, this.y, this.size, this.size, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
     }
-    else if (this.diraction === 'l'){
+    if (this.diraction === 'l'){
       scale(-1, 1);
       image(this.img[imgNum], -this.x, this.y, this.size, this.size, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
     }
@@ -91,9 +91,6 @@ class TheGame{
     this.coins = 0;
     this.enemyCoins = 0;
     this.counter = millis();
-
-
-
   }
 
   displayCharactersToSelect(){
@@ -108,75 +105,25 @@ class TheGame{
   }
 
   gameAction(){
-    if (actionLCharacters.length !== 0 ){
-      // let useless;
-      if (actionRCharacters[0].x > width-100 || actionRCharacters[0].x < 100){
-        actionRCharacters[0].blink();
+    for(let character of actionCharacters){
+      // print(character.x, actionEnemies);
+
+      if (character.x > width-100 ){
+        character.slash();
       }
       else{
-        if (dist(actionRCharacters[0].x, actionRCharacters[0].y, actionLCharacters[0].x, actionLCharacters[0].y,)<actionRCharacters[0].size/2){
-          actionRCharacters[0].slash();
-        }
-        else{
-          actionRCharacters[0].walk();
-        }
+        character.walk();
       }
-      if (actionLCharacters[0].x > width-100 || actionLCharacters[0].x < 100){
-        actionRCharacters[0].blink();
-      }
-      else{
-        if (dist(actionRCharacters[0].x, actionRCharacters[0].y, actionLCharacters[0].x, actionLCharacters[0].y,)<actionRCharacters[0].size/2){
-          actionLCharacters[0].slash();
-        }
-        else{
-          actionLCharacters[0].walk();
-        }
-      }
-    };
-    if (actionRCharacters.length === 2 ){
-      print(actionRCharacters.length);
-      actionRCharacters[1].blink();
-      actionLCharacters[1].blink();
     }
-    
 
-
-    // for(let character = 0; character < actionRCharacters.length; character++){
-    //   if (actionRCharacters[character].x > width-100 || actionRCharacters[character].x < 100){
-    //     actionRCharacters[character].blink();
-    //   }
-    //   else{
-    //     // actionCharacters[character].walk();
-    //     for(let enamy = 0; enamy < actionLCharacters.length; enamy++){
-    //       if (dist(actionRCharacters[character].x, actionRCharacters[character].y, actionLCharacters[enamy].x, actionLCharacters[enamy].y,)<actionRCharacters[character].size/2){
-    //         actionRCharacters[character].slash();
-    //         // actionLCharacters[enamy].slash();
-    //       }
-    //       else{
-    //         actionRCharacters[character].walk();
-    //         // actionLCharacters[enamy].walk();
-    //       }
-    //     }
-    //   }
-    // }
-    // for(let character = 0; character < actionLCharacters.length; character++){
-    //   if (actionRCharacters[character].x > width-100 || actionRCharacters[character].x < 100){
-    //     actionRCharacters[character].blink();
-    //   }
-    //   else{
-    //     // actionCharacters[character].walk();
-    //     for(let enamy = 0; enamy < actionRCharacters.length; enamy++){
-    //       if (dist(actionRCharacters[character].x, actionRCharacters[character].y, actionLCharacters[enamy].x, actionLCharacters[enamy].y,)<actionRCharacters[character].size/2){
-    //         // actionRCharacters[character].slash();
-    //         actionLCharacters[enamy].slash();
-    //       }
-    //       else{
-    //         // actionRCharacters[character].walk();
-    //         actionLCharacters[enamy].walk();
-    //       }
-    //     }
-    //   }
-    // }
+    for(let enamy of actionEnemies){      
+      if (enamy.x < 100){
+        enamy.slash();
+      }
+      else{
+        enamy.walk();
+      }
+    }
   }
 
   coinCounter(){
@@ -235,16 +182,16 @@ let maps = { //defining all the maps
   greenland : '',
 };
 
-//                                       price, size, speed, strenght, health,
 let characterImagesToPreloadAndSpicifcs = [
-  ['bolder1', [25, 150, 0.6, 50, 500]],
-  // ['bolder2'],
+  //      price, size, speed, strenght, health
+  ['bolder1', [25, 150, 0.4, 50, 500]],
+  // ['bolder2', [25, 180, 0.35, 60, 500]],
   // ['bolder3'],
   ['goblin', [5, 100, 0.6, 15, 100]]
 ];
 let allCharacters = []; //store all characters
-let actionLCharacters = []; //store all characters
-let actionRCharacters = []; //store all characters
+let actionEnemies = []; //store all characters
+let actionCharacters = []; //store all characters
 let allCharactersImgs = [];  //difine all characters images
 
 
@@ -293,7 +240,6 @@ function draw() {
   }
 }
 
-let another;
 
 function mousePressed(){
   for(let character in allCharacters){
@@ -311,9 +257,8 @@ function mouseReleased(){
     allCharacters[drag].x = ogX;
     allCharacters[drag].y = ogY;
     
-    actionRCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2,'r'));
-    actionLCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2,'l'));
-    // print(actionCharacters);
+    actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2,'r'));
+    actionEnemies.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2,'l'));
     
     ogX = 'empty';
     ogY = 'empty';
