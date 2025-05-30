@@ -7,7 +7,7 @@
 
 
 class Character{
-  constructor(price, size, speed, strenght, health, img, x, y, diraction){
+  constructor(price, size, speed, strenght, health, img, x, y, diraction, hitType){
     this.price = price;
     this.size = size;
     this.speed = speed;
@@ -18,6 +18,12 @@ class Character{
     this.y = y;
     this.frame = 1;
     this.diraction = diraction;
+    if (hitType === 'close'){
+      this.hitZone = this.size/3;
+    }
+    else if (hitType === 'far'){
+      this.hitZone = this.size;
+    }
   }
 
   showHealth(){
@@ -59,11 +65,12 @@ class Character{
   }
   
   slash(){
-    this.action(3);
-  }
-
-  throw(){
-    this.action(4);
+    if (this.hitType === 'close'){
+      this.action(3);
+    }
+    else if (this.hitType === 'far'){
+      this.action(4);
+    }
   }
 
   die(){
@@ -106,22 +113,32 @@ class TheGame{
 
   gameAction(){
     for(let character of actionCharacters){
-      // print(character.x, actionEnemies);
-
+      // print(actionCharacters);
       if (character.x > width-100 ){
         character.slash();
       }
       else{
         character.walk();
+        
       }
     }
 
-    for(let enamy of actionEnemies){      
-      if (enamy.x < 100){
-        enamy.slash();
+    for(let enemy of actionEnemies){
+      print(actionEnemies);
+      if (enemy.x < 100){
+        enemy.blink();
       }
       else{
-        enamy.walk();
+        for(let character of actionCharacters){
+          // print(actionCharacters);
+          if (character.x < enemy.x + enemy.hitZone){
+            character.slash();
+          }
+          else{
+            character.walk();
+            
+          }
+        }
       }
     }
   }
@@ -217,7 +234,7 @@ function preload(){
 function runInSetup(){
   let space = 150;
   for(let character in allCharactersImgs){
-    allCharacters.push(new Character(0, 100, 0.35, 50, 100, allCharactersImgs[character], space, 50, 'r'));
+    allCharacters.push(new Character(0, 100, 0.35, 50, 100, allCharactersImgs[character], space, 50, 'r', 10));
     space+=100;
   }
 }
