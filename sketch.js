@@ -18,6 +18,7 @@ class Character{
     this.y = y;
     this.frame = 1;
     this.diraction = diraction;
+    this.hitType = hitType;
     if (hitType === 'close'){
       this.hitZone = this.size/3;
     }
@@ -35,8 +36,10 @@ class Character{
       image(this.img[imgNum], this.x, this.y, this.size, this.size, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
     }
     if (this.diraction === 'l'){
+      push();
       scale(-1, 1);
       image(this.img[imgNum], -this.x, this.y, this.size, this.size, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
+      pop();
     }
     if (this.frame*this.img[imgNum].height > this.img[imgNum].width-this.img[imgNum].height){
       this.frame = 1;
@@ -64,7 +67,8 @@ class Character{
     }
   }
   
-  slash(){
+  hit(){
+    // this.action(3);
     if (this.hitType === 'close'){
       this.action(3);
     }
@@ -113,32 +117,30 @@ class TheGame{
 
   gameAction(){
     for(let character of actionCharacters){
-      // print(actionCharacters);
       if (character.x > width-100 ){
-        character.slash();
+        character.hit();
       }
       else{
-        character.walk();
+        character.hit();
         
       }
     }
 
     for(let enemy of actionEnemies){
-      print(actionEnemies);
       if (enemy.x < 100){
         enemy.blink();
       }
       else{
-        for(let character of actionCharacters){
-          // print(actionCharacters);
-          if (character.x < enemy.x + enemy.hitZone){
-            character.slash();
-          }
-          else{
-            character.walk();
+        enemy.walk();
+        // for(let character of actionCharacters){
+        //   if (character.x < enemy.x + enemy.hitZone){
+        //     character.hit();
+        //   }
+        //   else{
+        //     character.walk();
             
-          }
-        }
+        //   }
+        // }
       }
     }
   }
@@ -200,11 +202,11 @@ let maps = { //defining all the maps
 };
 
 let characterImagesToPreloadAndSpicifcs = [
-  //      price, size, speed, strenght, health
-  ['bolder1', [25, 150, 0.4, 50, 500]],
+  //      price, size, speed, strenght, health, hitZone
+  ['bolder1', [25, 150, 0.4, 50, 500, 'close']],
   // ['bolder2', [25, 180, 0.35, 60, 500]],
   // ['bolder3'],
-  ['goblin', [5, 100, 0.6, 15, 100]]
+  ['goblin', [5, 100, 0.6, 15, 100, 'close']],
 ];
 let allCharacters = []; //store all characters
 let actionEnemies = []; //store all characters
@@ -274,8 +276,8 @@ function mouseReleased(){
     allCharacters[drag].x = ogX;
     allCharacters[drag].y = ogY;
     
-    actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2,'r'));
-    actionEnemies.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2,'l'));
+    actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2,'r', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+    actionEnemies.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2,'l', characterImagesToPreloadAndSpicifcs[drag][1][5]));
     
     ogX = 'empty';
     ogY = 'empty';
