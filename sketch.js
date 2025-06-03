@@ -20,7 +20,7 @@ class Character{
     this.diraction = diraction;
     this.hitType = hitType;
     if (hitType === 'close'){
-      this.hitZone = this.size/3;
+      this.hitZone = this.size/2;
     }
     else if (hitType === 'far'){
       this.hitZone = this.size;
@@ -121,8 +121,18 @@ class TheGame{
         character.hit();
       }
       else{
-        character.hit();
-        
+        let tempHit = false;
+        for(let enemy of actionEnemies){
+          if (dist(character.x , character.y, enemy.x, enemy.y) < character.hitZone){
+            tempHit=true;
+          }
+        }
+        if (tempHit){
+          character.hit();
+        }
+        else{
+          character.walk();
+        }
       }
     }
 
@@ -131,16 +141,19 @@ class TheGame{
         enemy.blink();
       }
       else{
-        enemy.walk();
-        // for(let character of actionCharacters){
-        //   if (character.x < enemy.x + enemy.hitZone){
-        //     character.hit();
-        //   }
-        //   else{
-        //     character.walk();
-            
-        //   }
-        // }
+        // enemy.walk();
+        let tempHit = false;
+        for(let character of actionCharacters){
+          if (dist(character.x , character.y, enemy.x, enemy.y) < enemy.hitZone){
+            tempHit=true;
+          }
+        }
+        if (tempHit){
+          enemy.hit();
+        }
+        else{
+          enemy.walk();
+        }
       }
     }
   }
@@ -189,6 +202,7 @@ class TheGame{
 
 }
 
+
 let game;
 let characterActionsToPreload = ['idle','idleblinking','walk','slash','throw','die'];
 let imgHeight = 100;
@@ -200,6 +214,7 @@ let drag = 'empty';//using empty becouse 0 was a needed value
 let maps = { //defining all the maps
   greenland : '',
 };
+
 
 let characterImagesToPreloadAndSpicifcs = [
   //      price, size, speed, strenght, health, hitZone
