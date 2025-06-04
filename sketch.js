@@ -32,6 +32,10 @@ class Character{
   }
 
   action(imgNum){
+    if (this.y > 80){
+      textSize(20);
+      text(this.health,this.x,this.y-this.size/2);
+    }
     if (this.diraction === 'r'){
       image(this.img[imgNum], this.x, this.y, this.size, this.size, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
     }
@@ -80,10 +84,6 @@ class Character{
   die(){
     this.action(5);
   }
-
-  alive(){
-
-  }
 }
 
 
@@ -120,15 +120,24 @@ class TheGame{
       if (character.x > width-100 ){
         character.hit();
       }
+      else if(character.health<=0){
+        character.die();
+        if (character.frame === 1){
+          actionCharacters.pop(character);
+        }
+      }
       else{
-        let tempHit = false;
+        let tempHit = 'none';
         for(let enemy of actionEnemies){
           if (dist(character.x , character.y, enemy.x, enemy.y) < character.hitZone){
-            tempHit=true;
+            tempHit=enemy;
           }
         }
-        if (tempHit){
+        if (tempHit !== 'none'){
           character.hit();
+          if (character.frame === 1){
+            tempHit.health -= character.strenght;
+          }
         }
         else{
           character.walk();
@@ -140,16 +149,25 @@ class TheGame{
       if (enemy.x < 100){
         enemy.blink();
       }
+      else if(enemy.health<=0){
+        enemy.die();
+        if (enemy.frame === 1){
+          actionEnemies.pop(enemy);
+        }
+      }
       else{
         // enemy.walk();
-        let tempHit = false;
+        let tempHit = 'none';
         for(let character of actionCharacters){
           if (dist(character.x , character.y, enemy.x, enemy.y) < enemy.hitZone){
-            tempHit=true;
+            tempHit=character;
           }
         }
-        if (tempHit){
+        if (tempHit !== 'none'){
           enemy.hit();
+          if (enemy.frame === 1){
+            tempHit.health -= enemy.strenght;
+          }
         }
         else{
           enemy.walk();
@@ -219,7 +237,7 @@ let maps = { //defining all the maps
 let characterImagesToPreloadAndSpicifcs = [
   //      price, size, speed, strenght, health, hitZone
   ['bolder1', [25, 150, 0.4, 50, 500, 'close']],
-  // ['bolder2', [25, 180, 0.35, 60, 500]],
+  ['bolder2', [25, 180, 0.35, 60, 500, 'close']],
   // ['bolder3'],
   ['goblin', [5, 100, 0.6, 15, 100, 'close']],
 ];
@@ -260,6 +278,7 @@ function runInSetup(){
 function setup() {
   createCanvas(windowWidth, windowHeight);
   imageMode(CENTER);
+  textAlign(CENTER);
   runInSetup();
   game = new TheGame();
 }
@@ -291,8 +310,12 @@ function mouseReleased(){
     allCharacters[drag].x = ogX;
     allCharacters[drag].y = ogY;
     
-    actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2,'r', characterImagesToPreloadAndSpicifcs[drag][1][5]));
-    actionEnemies.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2,'l', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+    if (mouseX < width /2){
+      actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2,'r', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+    }
+    else {
+      actionEnemies.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2,'l', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+    }
     
     ogX = 'empty';
     ogY = 'empty';
