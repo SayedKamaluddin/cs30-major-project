@@ -17,14 +17,16 @@ class Character{
     this.x = x;
     this.y = y;
     this.frame = 1;
+    this.isDead = false;
     this.diraction = diraction;
     this.hitType = hitType;
     if (hitType === 'close'){
       this.hitZone = this.size/2;
     }
     else if (hitType === 'far'){
-      this.hitZone = this.size;
+      this.hitZone = this.size *2;
     }
+    this.tempframe;
   }
 
   showHealth(){
@@ -47,6 +49,9 @@ class Character{
     }
     if (this.frame*this.img[imgNum].height > this.img[imgNum].width-this.img[imgNum].height){
       this.frame = 1;
+    }
+    else if (this.isDead){
+      this.frame = this.img[imgNum].width;
     }
     else{
       this.frame += this.speed-0.2;
@@ -82,6 +87,10 @@ class Character{
   }
 
   die(){
+    if(!this.isDead){
+      this.frame = 1;
+      this.isDead = true;
+    }
     this.action(5);
   }
 }
@@ -99,7 +108,7 @@ class TheGame{
     this.mode = 'normal';
     this.level = 1;
     this.baseHealth = 1000;
-    this.coins = 0;
+    this.coins = 100;
     this.enemyCoins = 0;
     this.counter = millis();
   }
@@ -121,15 +130,14 @@ class TheGame{
         character.hit();
       }
       else if(character.health<=0){
+        // character.frame = 1;
         character.die();
-        if (character.frame === 1){
-          actionCharacters.pop(character);
-        }
+        
       }
       else{
         let tempHit = 'none';
         for(let enemy of actionEnemies){
-          if (dist(character.x , character.y, enemy.x, enemy.y) < character.hitZone){
+          if (dist(character.x , character.y, enemy.x, enemy.y) < character.hitZone && !enemy.isDead){
             tempHit=enemy;
           }
         }
@@ -151,15 +159,14 @@ class TheGame{
       }
       else if(enemy.health<=0){
         enemy.die();
-        if (enemy.frame === 1){
-          actionEnemies.pop(enemy);
-        }
+        this.level++;
+        
       }
       else{
         // enemy.walk();
         let tempHit = 'none';
         for(let character of actionCharacters){
-          if (dist(character.x , character.y, enemy.x, enemy.y) < enemy.hitZone){
+          if (dist(character.x , character.y, enemy.x, enemy.y) < enemy.hitZone && !character.isDead){
             tempHit=character;
           }
         }
@@ -183,7 +190,7 @@ class TheGame{
       this.counter = millis();
     }
     textSize(50);
-    text(this.coins,25,50);
+    text(this.coins,50,50);
   }
 
   startNormalGame(){
@@ -237,9 +244,17 @@ let maps = { //defining all the maps
 let characterImagesToPreloadAndSpicifcs = [
   //      price, size, speed, strenght, health, hitZone
   ['bolder1', [25, 150, 0.4, 50, 500, 'close']],
-  ['bolder2', [25, 180, 0.35, 60, 500, 'close']],
-  // ['bolder3'],
+  // ['bolder2', [25, 180, 0.35, 60, 500, 'close']],
   ['goblin', [5, 100, 0.6, 15, 100, 'close']],
+  ['fallen_angels_1', [10, 100, 0.6, 10, 100, 'far']],
+  // ['fallen_angels_2', [20, 200, 0.4, 20, 100, 'far']],
+  // ['fallen_angels_3', [5, 100, 0.6, 15, 100, 'far']],
+  // ['ogre', [20, 130, 0.45, 30, 300, 'close']],
+  // ['Reaper_Man_1', [5, 100, 0.6, 15, 100, 'close']],
+  // ['Reaper_Man_2', [5, 100, 0.6, 15, 100, 'close']],
+  // ['skeleton_crusader_1', [5, 100, 0.6, 15, 100, 'close']],
+  // ['skeleton_crusader_2', [5, 100, 0.6, 15, 100, 'close']],
+  // ['skeleton_crusader_3', [5, 100, 0.6, 15, 100, 'close']],
 ];
 let allCharacters = []; //store all characters
 let actionEnemies = []; //store all characters
@@ -310,10 +325,11 @@ function mouseReleased(){
     allCharacters[drag].x = ogX;
     allCharacters[drag].y = ogY;
     
-    if (mouseX < width /2){
+    if (mouseX < width /2 && game.coins >= characterImagesToPreloadAndSpicifcs[drag][1][0]){
+      game.coins -= characterImagesToPreloadAndSpicifcs[drag][1][0];
       actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2,'r', characterImagesToPreloadAndSpicifcs[drag][1][5]));
     }
-    else {
+    if (mouseX > width /2) {
       actionEnemies.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2,'l', characterImagesToPreloadAndSpicifcs[drag][1][5]));
     }
     
