@@ -13,11 +13,13 @@ class Character{
     this.speed = speed;
     this.strenght = strenght;
     this.health = health;
+    this.maxHealth = health;
     this.img = img;
     this.x = x;
     this.y = y;
     this.frame = 1;
-    this.isDead = false;
+    this.lastFrame;
+    this.isDead = 0;
     this.diraction = diraction;
     this.hitType = hitType;
     if (hitType === 'close'){
@@ -26,17 +28,22 @@ class Character{
     else if (hitType === 'far'){
       this.hitZone = this.size *2;
     }
-    this.tempframe;
   }
 
-  showHealth(){
-    
+  showHealth(health, maxHealth, x, y, color) {
+    stroke (0);
+    strokeWeight(4);
+    noFill();
+    rect(x, y, this.maxHealth/10, 5); 
+    noStroke(); 
+    fill(color); 
+    rect(x, y, map(health, 0, maxHealth, 0, this.maxHealth/10), 5); 
   }
 
   action(imgNum){
-    if (this.y > 80){
-      textSize(20);
-      text(this.health,this.x,this.y-this.size/2);
+    imageMode(BOTTOM);
+    if (this.health < 0){
+      this.health = 0;
     }
     if (this.diraction === 'r'){
       image(this.img[imgNum], this.x, this.y, this.size, this.size, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
@@ -48,10 +55,8 @@ class Character{
       pop();
     }
     if (this.frame*this.img[imgNum].height > this.img[imgNum].width-this.img[imgNum].height){
+      this.lastFrame = this.frame;
       this.frame = 1;
-    }
-    else if (this.isDead){
-      this.frame = this.img[imgNum].width;
     }
     else{
       this.frame += this.speed-0.2;
@@ -89,17 +94,11 @@ class Character{
   die(){
     if(!this.isDead){
       this.frame = 1;
-      this.isDead = true;
     }
+    this.isDead+=this.speed-0.2;
     this.action(5);
   }
-}
 
-
-class Maps {
-  constructor(paths) {
-    this.path = paths;
-  }
 }
 
 
@@ -116,9 +115,11 @@ class TheGame{
   displayCharactersToSelect(){
     for(let character = 0; character < allCharacters.length; character++){
       if (dist(allCharacters[character].x, allCharacters[character].y, mouseX, mouseY)<allCharacters[character].size/3){
+        printText(allCharacters[character].price, allCharacters[character].x, allCharacters[character].y+allCharacters[character].size/2+10, 20, true);
         allCharacters[character].blink();
       }
       else{
+        printText(allCharacters[character].price, allCharacters[character].x, allCharacters[character].y+allCharacters[character].size/2+10, 20, false);
         allCharacters[character].idle();
       }
     }
@@ -126,13 +127,16 @@ class TheGame{
 
   gameAction(){
     for(let character of actionCharacters){
+      character.showHealth(character.health, character.maxHealth, character.x-10, character.y-character.size/3, 'green');
       if (character.x > width-100 ){
         character.hit();
       }
       else if(character.health<=0){
         // character.frame = 1;
         character.die();
-        
+        if(character.isDead >= round(character.lastFrame)){
+          actionCharacters.splice(actionCharacters.indexOf(character), 1);
+        }
       }
       else{
         let tempHit = 'none';
@@ -143,7 +147,7 @@ class TheGame{
         }
         if (tempHit !== 'none'){
           character.hit();
-          if (character.frame === 1){
+          if (character.frame === character.lastFrame){
             tempHit.health -= character.strenght;
           }
         }
@@ -154,13 +158,16 @@ class TheGame{
     }
 
     for(let enemy of actionEnemies){
+      enemy.showHealth(enemy.health, enemy.maxHealth, enemy.x-10, enemy.y-enemy.size/3, 'red');
       if (enemy.x < 100){
         enemy.blink();
       }
       else if(enemy.health<=0){
         enemy.die();
         this.level++;
-        
+        if(enemy.isDead >= round(enemy.lastFrame)){
+          actionEnemies.splice(actionEnemies.indexOf(enemy), 1);
+        }
       }
       else{
         // enemy.walk();
@@ -172,7 +179,7 @@ class TheGame{
         }
         if (tempHit !== 'none'){
           enemy.hit();
-          if (enemy.frame === 1){
+          if (enemy.frame === enemy.lastFrame){
             tempHit.health -= enemy.strenght;
           }
         }
@@ -189,8 +196,7 @@ class TheGame{
       this.enemyCoins++;
       this.counter = millis();
     }
-    textSize(50);
-    text(this.coins,50,50);
+    printText(this.coins,50,50,50);
   }
 
   startNormalGame(){
@@ -200,13 +206,9 @@ class TheGame{
   }
 
   mainMenu(){
-    textAlign(CENTER);
-    textSize(100);
-    let wlc = text('Welcome to The Game', width/2, height/3);
-    textSize(50);
-    let normal = text('Normal Game', width/2, height/4*2);
-    textSize(50);
-    let cheat = text('Cheat Mode', width/2, height/5*3);
+    printText('Welcome to The Game', width/2, height/3, 100);
+    printText('Normal Game', width/2, height/4*2, 50);
+    printText('Cheat Mode', width/2, height/5*3, 50);
   }
 
   checkMods(){
@@ -238,23 +240,24 @@ let drag = 'empty';//using empty becouse 0 was a needed value
 
 let maps = { //defining all the maps
   greenland : '',
+  terrace : '',
 };
 
 
 let characterImagesToPreloadAndSpicifcs = [
   //      price, size, speed, strenght, health, hitZone
   ['bolder1', [25, 150, 0.4, 50, 500, 'close']],
-  // ['bolder2', [25, 180, 0.35, 60, 500, 'close']],
+  ['bolder2', [28, 180, 0.35, 75, 500, 'close']],
   ['goblin', [5, 100, 0.6, 15, 100, 'close']],
   ['fallen_angels_1', [10, 100, 0.6, 10, 100, 'far']],
-  // ['fallen_angels_2', [20, 200, 0.4, 20, 100, 'far']],
-  // ['fallen_angels_3', [5, 100, 0.6, 15, 100, 'far']],
-  // ['ogre', [20, 130, 0.45, 30, 300, 'close']],
-  // ['Reaper_Man_1', [5, 100, 0.6, 15, 100, 'close']],
-  // ['Reaper_Man_2', [5, 100, 0.6, 15, 100, 'close']],
-  // ['skeleton_crusader_1', [5, 100, 0.6, 15, 100, 'close']],
-  // ['skeleton_crusader_2', [5, 100, 0.6, 15, 100, 'close']],
-  // ['skeleton_crusader_3', [5, 100, 0.6, 15, 100, 'close']],
+  ['fallen_angels_2', [20, 200, 0.4, 20, 100, 'far']],
+  ['fallen_angels_3', [5, 100, 0.6, 15, 100, 'far']],
+  ['ogre', [20, 130, 0.45, 30, 300, 'close']],
+  ['Reaper_Man_1', [5, 100, 0.6, 15, 100, 'close']],
+  ['Reaper_Man_2', [5, 100, 0.6, 15, 100, 'close']],
+  ['skeleton_crusader_1', [5, 100, 0.6, 15, 100, 'close']],
+  ['skeleton_crusader_2', [5, 100, 0.8, 15, 100, 'close']],
+  ['skeleton_crusader_3', [5, 100, 0.8, 15, 100, 'close']],
 ];
 let allCharacters = []; //store all characters
 let actionEnemies = []; //store all characters
@@ -271,6 +274,26 @@ function helpPreloadCharacters(fileName){
 }
 
 
+function printText(message, x, y, size, hover = false){
+  let space = size/40;
+  textAlign(CENTER);
+  textStyle(BOLD);
+  textSize(size);
+  fill('white');
+  text(message, x-space, y-space);
+  fill('cyan');
+  text(message, x+space, y+space);
+  if (hover){ //if the mouse is hovering over the text
+    textSize(size+3);
+    fill('brown');
+  }
+  else{
+    fill('red');
+  }
+  text(message, x, y);
+}
+
+
 function preload(){
   for (let characterImg of characterImagesToPreloadAndSpicifcs){
     allCharactersImgs.push(helpPreloadCharacters(characterImg[0]));
@@ -284,7 +307,7 @@ function preload(){
 function runInSetup(){
   let space = 150;
   for(let character in allCharactersImgs){
-    allCharacters.push(new Character(0, 100, 0.35, 50, 100, allCharactersImgs[character], space, 50, 'r', 10));
+    allCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[character][1][0], 100, 0.35, 50, 100, allCharactersImgs[character], space, 50, 'r', 10));
     space+=100;
   }
 }
@@ -293,14 +316,13 @@ function runInSetup(){
 function setup() {
   createCanvas(windowWidth, windowHeight);
   imageMode(CENTER);
-  textAlign(CENTER);
   runInSetup();
   game = new TheGame();
 }
 
 
 function draw() {
-  image(maps.greenland, width/2, height/2, width, height);
+  image(maps.terrace, width/2, height/2, width, height);
   game.checkMods();
   if (drag !== 'empty'){
     allCharacters[drag].x = mouseX;
