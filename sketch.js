@@ -34,10 +34,10 @@ class Character{
     stroke (0);
     strokeWeight(4);
     noFill();
-    rect(x, y, this.maxHealth/10, 5); 
+    rect(x, y, 40, 5); 
     noStroke(); 
     fill(color); 
-    rect(x, y, map(health, 0, maxHealth, 0, this.maxHealth/10), 5); 
+    rect(x, y, map(health, 0, maxHealth, 0, 40), 5); 
   }
 
   action(imgNum){
@@ -104,7 +104,7 @@ class Character{
 
 class TheGame{
   constructor(){
-    this.mode = 'normal';
+    this.mode = 'menu';
     this.level = 1;
     this.baseHealth = 1000;
     this.coins = 100;
@@ -127,7 +127,7 @@ class TheGame{
 
   gameAction(){
     for(let character of actionCharacters){
-      character.showHealth(character.health, character.maxHealth, character.x-10, character.y-character.size/3, 'green');
+      character.showHealth(character.health, character.maxHealth, character.x-20, character.y-character.size/3, 'green');
       if (character.x > width-100 ){
         character.hit();
       }
@@ -158,7 +158,7 @@ class TheGame{
     }
 
     for(let enemy of actionEnemies){
-      enemy.showHealth(enemy.health, enemy.maxHealth, enemy.x-10, enemy.y-enemy.size/3, 'red');
+      enemy.showHealth(enemy.health, enemy.maxHealth, enemy.x-20, enemy.y-enemy.size/3, 'red');
       if (enemy.x < 100){
         enemy.blink();
       }
@@ -190,8 +190,12 @@ class TheGame{
     }
   }
 
+  controlPage(){
+    
+  }
+
   coinCounter(){
-    if(millis()>this.counter+1000){
+    if(millis()>this.counter+1000 && this.mode === 'Normal Game'){
       this.coins++;
       this.enemyCoins++;
       this.counter = millis();
@@ -205,23 +209,46 @@ class TheGame{
     this.gameAction();
   }
 
+  startCheatGame(){
+    this.displayCharactersToSelect();
+    this.coins = 999;
+    this.coinCounter();
+    this.gameAction();
+  }
+
   mainMenu(){
+    let space = 80;
+    let x = width/2;
+    let y = height/3;
     printText('Welcome to The Game', width/2, height/3, 100);
-    printText('Normal Game', width/2, height/4*2, 50);
-    printText('Cheat Mode', width/2, height/5*3, 50);
+    for(let text of ['','Normal Game', 'Cheat Mode','Controls']){
+      y += space;
+      if (mouseX > x - textWidth(text)/2 && mouseX < x + textWidth(text)/2 && mouseY > y - 40 && mouseY < y + 5){
+        printText(text, x, y, 50, true);
+        if (mouseIsPressed){
+          if (text !== ''){
+            this.mode = text;
+            break;
+          }
+        }
+      }
+      else{
+        printText(text, x, y, 50, false);
+      }
+    }
   }
 
   checkMods(){
     if (this.mode === 'menu'){
       this.mainMenu();
     }
-    else if (this.mode === 'normal'){
+    else if (this.mode === 'Normal Game'){
       this.startNormalGame();
     }
-    else if (this.mode === 'cheat'){
+    else if (this.mode === 'Cheat Mode'){
       this.startCheatGame();
     }
-    else if (this.mode === 'controls'){
+    else if (this.mode === 'Controls'){
       this.controlPage();
     }
   }
@@ -246,15 +273,15 @@ let maps = { //defining all the maps
 
 let characterImagesToPreloadAndSpicifcs = [
   //      price, size, speed, strenght, health, hitZone
-  ['bolder1', [25, 150, 0.4, 50, 500, 'close']],
-  ['bolder2', [28, 180, 0.35, 75, 500, 'close']],
-  ['goblin', [5, 100, 0.6, 15, 100, 'close']],
-  ['fallen_angels_1', [10, 100, 0.6, 10, 100, 'far']],
-  ['fallen_angels_2', [20, 200, 0.4, 20, 100, 'far']],
-  ['fallen_angels_3', [5, 100, 0.6, 15, 100, 'far']],
-  ['ogre', [20, 130, 0.45, 30, 300, 'close']],
-  ['Reaper_Man_1', [5, 100, 0.6, 15, 100, 'close']],
-  ['Reaper_Man_2', [5, 100, 0.6, 15, 100, 'close']],
+  // ['bolder1', [25, 150, 0.4, 50, 500, 'close']],
+  // ['bolder2', [28, 180, 0.35, 75, 500, 'close']],
+  // ['goblin', [5, 100, 0.6, 15, 100, 'close']],
+  // ['fallen_angels_1', [10, 100, 0.6, 10, 100, 'far']],
+  // ['fallen_angels_2', [20, 200, 0.4, 20, 100, 'far']],
+  // ['fallen_angels_3', [5, 100, 0.6, 15, 100, 'far']],
+  // ['ogre', [20, 130, 0.45, 30, 300, 'close']],
+  // ['Reaper_Man_1', [5, 100, 0.6, 15, 100, 'close']],
+  // ['Reaper_Man_2', [5, 100, 0.6, 15, 100, 'close']],
   ['skeleton_crusader_1', [5, 100, 0.6, 15, 100, 'close']],
   ['skeleton_crusader_2', [5, 100, 0.8, 15, 100, 'close']],
   ['skeleton_crusader_3', [5, 100, 0.8, 15, 100, 'close']],
@@ -349,10 +376,10 @@ function mouseReleased(){
     
     if (mouseX < width /2 && game.coins >= characterImagesToPreloadAndSpicifcs[drag][1][0]){
       game.coins -= characterImagesToPreloadAndSpicifcs[drag][1][0];
-      actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2,'r', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+      actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2+50,'r', characterImagesToPreloadAndSpicifcs[drag][1][5]));
     }
     if (mouseX > width /2) {
-      actionEnemies.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2,'l', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+      actionEnemies.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2+50,'l', characterImagesToPreloadAndSpicifcs[drag][1][5]));
     }
     
     ogX = 'empty';
