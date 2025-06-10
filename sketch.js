@@ -129,6 +129,7 @@ class TheGame{
     this.coins = 5;
     this.enemyCoins = 0;
     this.counter = millis();
+    this.cheatmode = false;
   }
 
   homeButton(){
@@ -272,7 +273,7 @@ class TheGame{
     this.coinCounterAndOthers();
     this.gameAction();
     this.homeButton();
-    this.botSummons();
+    // this.botSummons();
   }
 
   mainMenu(){
@@ -303,15 +304,19 @@ class TheGame{
       this.level = 1;
     }
     if (this.mode === 'menu'){
+      this.cheatmode = false;
       this.mainMenu();
     }
     else if (this.mode === 'Normal Game'){
+      this.cheatmode = false;
       this.startNormalGame();
     }
     else if (this.mode === 'Cheat Mode'){
+      this.cheatmode = true;
       this.startCheatGame();
     }
     else if (this.mode === 'Controls'){
+      this.cheatmode = false;
       this.controlPage();
     }
   }
@@ -335,7 +340,7 @@ let maps = { //defining all the maps
 
 
 let characterImagesToPreloadAndSpicifcs = [
-      //  price, size, speed, strenght, health, hitZone
+//      price, size, speed, strenght, health, hitZone
   
   ['goblin', [4, 100, 0.6, 15, 100, 'close']],
   ['skeleton_crusader_1', [6, 100, 0.6, 15, 100, 'close']],
@@ -445,9 +450,20 @@ function mouseReleased(){
   if (drag !== 'empty'){
     allCharacters[drag].x = ogX;
     allCharacters[drag].y = ogY;
-    if (mouseY>150 && game.coins >= characterImagesToPreloadAndSpicifcs[drag][1][0]){
-      game.coins -= characterImagesToPreloadAndSpicifcs[drag][1][0];
-      actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2+50,'r', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+    if (game.cheatmode){
+      if (mouseX < width /2 && game.coins >= characterImagesToPreloadAndSpicifcs[drag][1][0]){
+        game.coins -= characterImagesToPreloadAndSpicifcs[drag][1][0];
+        actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2+50,'r', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+      }
+      if (mouseX > width /2) {
+        actionEnemies.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2+50,'l', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+      }
+    }
+    else{
+      if (mouseY>150 && game.coins >= characterImagesToPreloadAndSpicifcs[drag][1][0]){
+        game.coins -= characterImagesToPreloadAndSpicifcs[drag][1][0];
+        actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2+50,'r', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+      }
     }
     ogX = 'empty';
     ogY = 'empty';
