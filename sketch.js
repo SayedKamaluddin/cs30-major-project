@@ -146,7 +146,7 @@ class TheGame{
 
   botSummons(){
     if (random(1000)<game.level) {
-      const rant = round(random(0,game.level));
+      const rant = round(random(0,Math.min(this.level, allCharacters.length - 1)));
       const enm = characterImagesToPreloadAndSpicifcs[rant][1];
       actionEnemies.push(new Character(enm[0] ,enm[1], enm[2], enm[3], enm[4],allCharactersImgs[rant],width-100,height/2+50,'l', enm[5]));
     }
@@ -298,6 +298,10 @@ class TheGame{
   }
 
   checkMods(){
+    if (this.level <= 0 || this.level > allCharacters.length - 1){
+      this.mode = 'menu';
+      this.level = 1;
+    }
     if (this.mode === 'menu'){
       this.mainMenu();
     }
