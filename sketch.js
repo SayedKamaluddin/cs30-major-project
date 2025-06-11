@@ -138,6 +138,10 @@ class TheGame{
       if (mouseIsPressed){
         this.mode = 'menu';
         this.coins = 5;
+        this.cheatmode = false;
+        this.level = 1;
+        actionCharacters = [];
+        actionEnemies = [];
       }
     }
     else{
@@ -255,7 +259,9 @@ class TheGame{
       this.counter = millis();
     }
     printText(this.coins,50,50,50);
+    printText('Coins',50,80,20);
     printText(this.level,width-50,50,50);
+    printText('Level',width-50,80,20);
   }
 
   startNormalGame(){
@@ -304,11 +310,9 @@ class TheGame{
       this.level = 1;
     }
     if (this.mode === 'menu'){
-      this.cheatmode = false;
       this.mainMenu();
     }
     else if (this.mode === 'Normal Game'){
-      this.cheatmode = false;
       this.startNormalGame();
     }
     else if (this.mode === 'Cheat Mode'){
@@ -316,7 +320,6 @@ class TheGame{
       this.startCheatGame();
     }
     else if (this.mode === 'Controls'){
-      this.cheatmode = false;
       this.controlPage();
     }
   }
