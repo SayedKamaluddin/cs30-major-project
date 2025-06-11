@@ -252,6 +252,28 @@ class TheGame{
     this.homeButton();
   }
 
+  levelsPage(){
+    printText('Levels', width/2, height/4, 100, false, [255, 81, 41]);
+    let space = 50;
+    for (let i = 0; i<= allCharacters.length; i++){
+      if (mouseX > 50 - textWidth(i)/2 && mouseX < 50 + textWidth(i)/2 && mouseY > height-50 - 40 && mouseY < height-50 + 5){
+        printText(i, 200+space*i, height/4 + 100, 25, true);
+        if (mouseIsPressed){
+          this.mode = 'menu';
+          this.coins = 5;
+          this.cheatmode = false;
+          this.level = 1;
+          actionCharacters = [];
+          actionEnemies = [];
+        }
+      }
+      else{
+        printText(i, 200+space*i, height/4 + 100, 25, false, 'yellow');
+      }
+    }
+    this.homeButton();
+  }
+
   coinCounterAndOthers(){
     if(millis()>this.counter+1000 && this.mode === 'Normal Game'){
       this.coins++;
@@ -287,7 +309,7 @@ class TheGame{
     let x = width/2;
     let y = height/3;
     printText('Welcome to The Game', width/2, height/3, 100);
-    for(let text of ['','Normal Game', 'Cheat Mode','Controls']){
+    for(let text of ['','Normal Game', 'Levels', 'Cheat Mode','Controls']){
       y += space;
       if (mouseX > x - textWidth(text)/2 && mouseX < x + textWidth(text)/2 && mouseY > y - 40 && mouseY < y + 5){
         printText(text, x, y, 50, true);
@@ -314,6 +336,9 @@ class TheGame{
     }
     else if (this.mode === 'Normal Game'){
       this.startNormalGame();
+    }
+    else if (this.mode === 'Levels'){
+      this.levelsPage();
     }
     else if (this.mode === 'Cheat Mode'){
       this.cheatmode = true;
@@ -367,15 +392,6 @@ let actionCharacters = []; //store all characters
 let allCharactersImgs = [];  //difine all characters images
 
 
-function helpPreloadCharacters(fileName){
-  let imgList = [];
-  for(let file of characterActionsToPreload){
-    imgList.push(loadImage('characters\\'+fileName+'\\'+file+'.png'));
-  }
-  return imgList;
-}
-
-
 function printText(message, x, y, size, hover = false, color = 'red'){
   let space = size/40;
   textAlign(CENTER);
@@ -398,6 +414,15 @@ function printText(message, x, y, size, hover = false, color = 'red'){
     }
   }
   text(message, x, y);
+}
+
+
+function helpPreloadCharacters(fileName){
+  let imgList = [];
+  for(let file of characterActionsToPreload){
+    imgList.push(loadImage('characters\\'+fileName+'\\'+file+'.png'));
+  }
+  return imgList;
 }
 
 
