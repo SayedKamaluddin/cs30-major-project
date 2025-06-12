@@ -11,7 +11,7 @@ There will be diffrent characters with diffrent abilities you can chose from eac
 - Main menu
     - Play
     - Instructions
-- PLayground with three Diffrent routs
+- PLayground
 - Two Bases on each side of playground
 - Characters / Hit  / Speed  /  Hp  / Cost
     - Regular/ 10hp / Normal / 50hp / 20

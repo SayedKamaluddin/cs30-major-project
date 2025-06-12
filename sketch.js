@@ -124,7 +124,8 @@ class Character{
 class TheGame{
   constructor(){
     this.mode = 'menu';
-    this.baseHealth = 1000;
+    this.characterBaseHealth = 1000;
+    this.enemyBaseHealth = 1000;
     this.level = 1;
     this.coins = 5;
     this.enemyCoins = 0;
@@ -133,19 +134,13 @@ class TheGame{
   }
 
   homeButton(){
-    if (mouseX > 50 - textWidth(text)/2 && mouseX < 50 + textWidth(text)/2 && mouseY > height-50 - 40 && mouseY < height-50 + 5){
-      printText('Home', 50, height-50, 23, true);
-      if (mouseIsPressed){
-        this.mode = 'menu';
-        this.coins = 5;
-        this.cheatmode = false;
-        this.level = 1;
-        actionCharacters = [];
-        actionEnemies = [];
-      }
-    }
-    else{
-      printText('Home', 50, height-50, 20, false);
+    if (clickable('Home', 50, height-50, 23, 'red')){
+      this.mode = 'menu';
+      this.coins = 5;
+      this.cheatmode = false;
+      this.level = 1;
+      actionCharacters = [];
+      actionEnemies = [];
     }
   }
 
@@ -182,7 +177,7 @@ class TheGame{
       }
       else if (character.x < 0 || character.x > width){
         actionCharacters.splice(actionCharacters.indexOf(character), 1);
-        this.level += 1;
+        this.enemyBaseHealth -= character.strenght;
       }
       else{
         let tempHit = 'none';
@@ -213,7 +208,7 @@ class TheGame{
       }
       else if (enemy.x < 0 || enemy.x > width){
         actionEnemies.splice(actionEnemies.indexOf(enemy), 1);
-        this.level -= 1;
+        this.characterBaseHealth -= enemy.strenght;
       }
       else{
         // enemy.walk();
@@ -238,37 +233,27 @@ class TheGame{
 
   controlPage(){
     printText('Controls', width/2, height/4, 100, false, [255, 81, 41]);
-    printText('The path to victory lies in ruin — destroy the enemy base before they reach yours.', width/2, height/4 + 100, 25, false, 'yellow');
-    printText('To do so, summon Wielders — ancient beings of might and will.', width/2, height/4 + 150, 25, false, 'yellow');
-    printText('Drag and drop a Wielder into the battlefield, and it shall obey your command.', width/2, height/4 + 200, 25, false, 'yellow');
-    printText('Each Wielder bears a price, etched faintly in the corner beneath them.', width/2, height/4 + 250, 25, false, 'yellow');
-    printText('You must possess enough coin to call them forth.', width/2, height/4 + 300, 25, false, 'yellow');
-    printText('Coins will trickle in with time — a gift of patience, or a trap for the reckless.', width/2, height/4 + 350, 25, false, 'yellow');
-    printText('But spend with care — each coin may shape what comes next.', width/2, height/4 + 400, 25, false, 'yellow');
-    printText('Some Wielders strike from afar, others clash face to face — choose your forces with intent.', width/2, height/4 + 450, 25, false, 'yellow');
-    printText('The shadows do not forgive poor judgment.', width/2, height/4 + 500, 25, false, 'yellow');
-    printText('When the enemy approaches, they will strike at your base — a fortress of stone and resolve.', width/2, height/4 + 550, 25, false, 'yellow');
-    printText('Guard it well, for if it falls, so too does your hope.', width/2, height/4 + 600, 25, false, 'yellow');
+    printText('The path to victory lies in ruin — destroy the enemy base before they reach yours.', width/2, height/4 + 100, 25, false, 'black');
+    printText('To do so, summon Wielders — ancient beings of might and will.', width/2, height/4 + 150, 25, false, 'black');
+    printText('Drag and drop a Wielder into the battlefield, and it shall obey your command.', width/2, height/4 + 200, 25, false, 'black');
+    printText('Each Wielder bears a price, etched faintly in the corner beneath them.', width/2, height/4 + 250, 25, false, 'black');
+    printText('You must possess enough coin to call them forth.', width/2, height/4 + 300, 25, false, 'black');
+    printText('Coins will trickle in with time — a gift of patience, or a trap for the reckless.', width/2, height/4 + 350, 25, false, 'black');
+    printText('But spend with care — each coin may shape what comes next.', width/2, height/4 + 400, 25, false, 'black');
+    printText('Some Wielders strike from afar, others clash face to face — choose your forces with intent.', width/2, height/4 + 450, 25, false, 'black');
+    printText('The shadows do not forgive poor judgment.', width/2, height/4 + 500, 25, false, 'black');
+    printText('When the enemy approaches, they will strike at your base — a fortress of stone and resolve.', width/2, height/4 + 550, 25, false, 'black');
+    printText('Guard it well, for if it falls, so too does your hope.', width/2, height/4 + 600, 25, false, 'black');
     this.homeButton();
   }
 
   levelsPage(){
     printText('Levels', width/2, height/4, 100, false, [255, 81, 41]);
     let space = 50;
-    for (let i = 0; i<= allCharacters.length; i++){
-      if (mouseX > 50 - textWidth(i)/2 && mouseX < 50 + textWidth(i)/2 && mouseY > height-50 - 40 && mouseY < height-50 + 5){
-        printText(i, 200+space*i, height/4 + 100, 25, true);
-        if (mouseIsPressed){
-          this.mode = 'menu';
-          this.coins = 5;
-          this.cheatmode = false;
-          this.level = 1;
-          actionCharacters = [];
-          actionEnemies = [];
-        }
-      }
-      else{
-        printText(i, 200+space*i, height/4 + 100, 25, false, 'yellow');
+    for (let i = 1; i<= allCharacters.length; i++){
+      if (clickable(i, 200+space*i, height/4 + 100, 20, 'red')){
+        this.level = i;
+        this.mode = 'Normal Game';
       }
     }
     this.homeButton();
@@ -311,22 +296,20 @@ class TheGame{
     printText('Welcome to The Game', width/2, height/3, 100);
     for(let text of ['','Normal Game', 'Levels', 'Cheat Mode','Controls']){
       y += space;
-      if (mouseX > x - textWidth(text)/2 && mouseX < x + textWidth(text)/2 && mouseY > y - 40 && mouseY < y + 5){
-        printText(text, x, y, 50, true);
-        if (mouseIsPressed){
-          if (text !== ''){
-            this.mode = text;
-            break;
-          }
+      if (clickable(text, x, y, 50)){
+        if (text !== ''){
+          this.mode = text;
+          break;
         }
-      }
-      else{
-        printText(text, x, y, 50, false);
       }
     }
   }
 
-  checkMods(){
+  runTheGame(){
+    if (drag !== 'empty'){
+      allCharacters[drag].x = mouseX;
+      allCharacters[drag].y = mouseY;
+    }
     if (this.level <= 0 || this.level > allCharacters.length - 1){
       this.mode = 'menu';
       this.level = 1;
@@ -359,17 +342,19 @@ let imgHeight = 100;
 let ogY = 'empty';//using empty becouse 0 was a needed value
 let ogX = 'empty';//using empty becouse 0 was a needed value
 let drag = 'empty';//using empty becouse 0 was a needed value
-
-
 let maps = { //defining all the maps
+  bamboo : '',
+  castle : '',
+  forest : '',
+  sky : '',
   greenland : '',
   terrace : '',
+  forest2d : '',
 };
-
-
 let characterImagesToPreloadAndSpicifcs = [
 //      price, size, speed, strenght, health, hitZone
   
+  ['Reaper_Man_2', [10, 80, 0.7, 1000, 1, 'close']],
   ['goblin', [4, 100, 0.6, 15, 100, 'close']],
   ['skeleton_crusader_1', [6, 100, 0.6, 15, 100, 'close']],
   ['Valkyrie_1', [6, 100, 0.8, 15, 100, 'close']],
@@ -384,7 +369,6 @@ let characterImagesToPreloadAndSpicifcs = [
   ['bolder2', [28, 180, 0.35, 75, 500, 'close']],
   ['bolder3', [35, 200, 0.27, 100, 800, 'close']],
   ['Zombie_Villager_1', [20, 100, 0.4, 5, 100, 'far']],
-  ['Reaper_Man_2', [10, 80, 0.7, 1000, 1, 'close']],
 ];
 let allCharacters = []; //store all characters
 let actionEnemies = []; //store all characters
@@ -414,6 +398,30 @@ function printText(message, x, y, size, hover = false, color = 'red'){
     }
   }
   text(message, x, y);
+}
+
+
+function clickable(text, x, y, size, color){
+  if (mouseX > x - textWidth(text)/2 && mouseX < x + textWidth(text)/2 && mouseY > y - 40 && mouseY < y + 5){
+    printText(text, x, y, size, true);
+    if (mouseIsPressed){
+      return true;
+    }
+  }
+  else{
+    printText(text, x, y, size, false, color);
+  }
+}
+
+
+function showMap(){
+  let keys = Object.keys(maps);
+  let index = Math.min(game.level - 1, keys.length - 1);
+  image(maps[keys[index]], width/2, height/2, width, height);
+  printText(game.characterBaseHealth, 100, 150, 50);
+  printText('Base Health', 100, 180, 20);
+  printText(game.enemyBaseHealth, width - 100, 150, 50);
+  printText('Enemy Base Health', width - 100, 180, 20);
 }
 
 
@@ -454,12 +462,8 @@ function setup() {
 
 
 function draw() {
-  image(maps.terrace, width/2, height/2, width, height);
-  game.checkMods();
-  if (drag !== 'empty'){
-    allCharacters[drag].x = mouseX;
-    allCharacters[drag].y = mouseY;
-  }
+  showMap();
+  game.runTheGame();
 }
 
 
