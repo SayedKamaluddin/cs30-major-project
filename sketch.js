@@ -55,7 +55,7 @@ class Character{
       }
       else if (this.diraction === 'r'){
         this.shotX += 10;
-        fill('green');
+        fill(userColor);
       }
       if (this.shotX > this.x+this.hitZone){
         return;
@@ -136,8 +136,9 @@ class TheGame{
     this.enemyCoins = 0;
     this.counter = millis();
     this.cheatmode = false;
-    this.characterBaseHealth = 1000;
-    this.enemyBaseHealth = 1000;
+    this.baseFullHealth = 1000*this.level;
+    this.characterBaseHealth = 1000*this.level;
+    this.enemyBaseHealth = 1000*this.level;
   }
 
   showMap(){
@@ -151,15 +152,28 @@ class TheGame{
   }
   // Function to draw the bases of the characters and enemies /*incomplete*/
   bases(floor){
-    fill('green');
-    rect(0, floor, 100, 50);
-    fill('red');
-    rect(width-100, floor, 100, 50);
+    stroke (0);
+    strokeWeight(4);
+    fill(enemyColor);
+    rect(0, 250, 100, 50);
+    noStroke(); 
+    fill(userColor);
+    rect(0, 250, map(this.characterBaseHealth, 0, this.baseFullHealth, 0, 100), 50); 
+
+
+    stroke (0);
+    strokeWeight(4);
+    fill(userColor);
+    rect(width-100, 250, 100, 50);
+    noStroke(); 
+    fill(enemyColor);
+    rect(width-map(this.enemyBaseHealth, 0, this.baseFullHealth, 0, 100), 250, map(this.enemyBaseHealth, 0, this.baseFullHealth, 0, 100), 50); 
+
+
     fill('black');
-    textAlign(CENTER);
     textSize(20);
-    text(this.characterBaseHealth, 50, floor+20);
-    text(this.enemyBaseHealth, width-50, floor+20);
+    text(this.characterBaseHealth, 50, 275);
+    text(this.enemyBaseHealth, width-50, 275);
   }
 
   homeButton(){
@@ -196,7 +210,7 @@ class TheGame{
 
   gameAction(){
     for(let character of actionCharacters){
-      character.showHealth(character.health, character.maxHealth, character.x-20, character.y-character.size/3, 'green');
+      character.showHealth(character.health, character.maxHealth, character.x-20, character.y-character.size/3, userColor);
       if(character.health<=0){
         // character.frame = 1;
         character.die();
@@ -204,9 +218,11 @@ class TheGame{
           actionCharacters.splice(actionCharacters.indexOf(character), 1);
         }
       }
-      else if (character.x < 0 || character.x > width){
-        actionCharacters.splice(actionCharacters.indexOf(character), 1);
-        this.enemyBaseHealth -= character.strenght;
+      else if (character.x > width-50){
+        character.hit();
+        if (character.frame === character.lastFrame){
+          this.enemyBaseHealth -= character.strenght;
+        }
       }
       else{
         let tempHit = 'none';
@@ -228,16 +244,18 @@ class TheGame{
     }
 
     for(let enemy of actionEnemies){
-      enemy.showHealth(enemy.health, enemy.maxHealth, enemy.x-20, enemy.y-enemy.size/3, 'red');
+      enemy.showHealth(enemy.health, enemy.maxHealth, enemy.x-20, enemy.y-enemy.size/3, enemyColor);
       if(enemy.health<=0){
         enemy.die();
         if(enemy.isDead >= round(enemy.lastFrame)){
           actionEnemies.splice(actionEnemies.indexOf(enemy), 1);
         }
       }
-      else if (enemy.x < 0 || enemy.x > width){
-        actionEnemies.splice(actionEnemies.indexOf(enemy), 1);
-        this.characterBaseHealth -= enemy.strenght;
+      else if (enemy.x < 50){
+        enemy.hit();
+        if (enemy.frame === enemy.lastFrame){
+          this.characterBaseHealth -= enemy.strenght;
+        }
       }
       else{
         // enemy.walk();
@@ -315,7 +333,6 @@ class TheGame{
     this.coinCounterAndOthers();
     this.gameAction();
     this.homeButton();
-    // this.botSummons();
   }
 
   mainMenu(){
@@ -336,7 +353,7 @@ class TheGame{
 
   lose(){
     if (this.msgtimer < 60*5){
-      printText('You Lose', width/2, height/2, 100, false, 'red');
+      printText('You Lose', width/2, height/2, 100, false, enemyColor);
       this.msgtimer++;
     }
     else{
@@ -353,7 +370,7 @@ class TheGame{
 
   win(){
     if (this.msgtimer < 60*5){
-      printText('You Win', width/2, height/2, 100, false, 'green');
+      printText('You Win', width/2, height/2, 100, false, userColor);
       this.msgtimer++;
     }
     else{
@@ -412,9 +429,13 @@ let game;
 let mymap;
 let characterActionsToPreload = ['idle','idleblinking','walk','slash','throw','die'];
 let imgHeight = 100;
+let userColor = 'green';
+let enemyColor = 'red';
 let ogY = 'empty';//using empty becouse 0 was a needed value
 let ogX = 'empty';//using empty becouse 0 was a needed value
 let drag = 'empty';//using empty becouse 0 was a needed value
+// for music
+let sounds = ['bgsong', 'game-over', 'level-up-sound'];
 
 //character specific variables
 let maps = [ //defining all the maps and the floor height
@@ -437,20 +458,20 @@ let maps = [ //defining all the maps and the floor height
 ];
 let characterImagesToPreloadAndSpicifcs = [
 //      price, size, speed, strenght, health, hitZone
-['goblin', [4, 100, 3.6, 1005, 100, 'close']],
-['skeleton_crusader_1', [6, 100, 0.6, 15, 100, 'close']],
-['Valkyrie_1', [6, 100, 0.8, 15, 100, 'close']],
-['fallen_angels_1', [10, 100, 0.6, 4, 100, 'far']],
-['fallen_angels_3', [5, 100, 0.6, 15, 100, 'far']],
-['Valkyrie_2', [5, 100, 0.8, 15, 100, 'close']],
-['Valkyrie_3', [5, 100, 0.8, 15, 100, 'far']],
-['Reaper_Man_1', [5, 100, 0.6, 15, 100, 'close']],
-['ogre', [20, 130, 0.45, 30, 300, 'close']],
-['bolder1', [25, 150, 0.4, 50, 500, 'close']],
-['bolder2', [28, 180, 0.35, 75, 500, 'close']],
-['bolder3', [35, 200, 0.27, 100, 800, 'close']],
-['Zombie_Villager_1', [20, 100, 0.4, 5, 100, 'far']],
-['Reaper_Man_2', [10, 80, 0.7, 1000, 1, 'close']],
+  ['goblin', [4, 100, 0.6, 15, 100, 'close']],
+  ['skeleton_crusader_1', [6, 100, 0.6, 15, 100, 'close']],
+  ['Valkyrie_1', [6, 100, 0.8, 15, 100, 'close']],
+  ['fallen_angels_1', [10, 100, 0.6, 4, 100, 'far']],
+  ['Reaper_Man_2', [10, 80, 0.7, 1000, 1, 'close']],
+  ['fallen_angels_3', [5, 100, 0.6, 15, 100, 'far']],
+  ['Valkyrie_2', [5, 100, 0.8, 15, 100, 'close']],
+  ['Valkyrie_3', [5, 100, 0.8, 15, 100, 'far']],
+  ['Reaper_Man_1', [5, 100, 0.6, 15, 100, 'close']],
+  ['ogre', [20, 130, 0.45, 30, 300, 'close']],
+  ['bolder1', [25, 150, 0.4, 50, 500, 'close']],
+  ['bolder2', [28, 180, 0.35, 75, 500, 'close']],
+  ['bolder3', [35, 200, 0.27, 100, 800, 'close']],
+  ['Zombie_Villager_1', [20, 100, 0.4, 5, 100, 'far']],
 ];
 let allCharacters = []; //store all characters
 let actionEnemies = []; //store all characters
