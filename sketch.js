@@ -366,7 +366,7 @@ class MapsAndBases{
       this.bases();
     }
     else{
-      image(maps[menu], width/2, height/2, width, height);
+      image(maps.menu, width/2, height/2, width, height);
     }
     if (game.mode === 'Normal Game' || game.mode === 'Cheat Mode'){
       for(let character of actionCharacters){
