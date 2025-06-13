@@ -6,6 +6,11 @@
 // need some time to think about it
 
 
+// This is a simple base defence game where you can summon characters to defend your base from enemies
+// The game has a menu, levels, and a cheat mode
+
+
+//creates a character class that will be used to create characters
 class Character{
   constructor(price, size, speed, strenght, health, img, x, y, diraction, hitType){
     this.price = price;
@@ -121,7 +126,7 @@ class Character{
 
 }
 
-
+// TheGame class is the main class that will be used to run the game and all its functionalities like the menu, levels, cheat mode, and the game itself
 class TheGame{
   constructor(){
     this.mode = 'menu';
@@ -144,7 +149,7 @@ class TheGame{
       image(maps[0][2], width/2, height/2, width, height);
     }
   }
-
+  // Function to draw the bases of the characters and enemies /*incomplete*/
   bases(floor){
     fill('green');
     rect(0, floor, 100, 50);
@@ -167,7 +172,7 @@ class TheGame{
       actionEnemies = [];
     }
   }
-
+  // Function to summon bot enemies aproriate to the level /*incomplete*/
   botSummons(){
     if (random(1000)<game.level) {
       const rant = round(random(0,Math.min(this.level, allCharacters.length - 1)));
@@ -300,7 +305,7 @@ class TheGame{
     this.coinCounterAndOthers();
     this.gameAction();
     this.homeButton();
-    // this.botSummons();
+    this.botSummons();
   }
 
   startCheatGame(){
@@ -362,7 +367,7 @@ class TheGame{
       this.mode = 'Normal Game';
     }
   }
-
+  // Function to run the game and all its functionalities
   runTheGame(){
     this.showMap();
     if (this.characterBaseHealth <= 0){
@@ -402,7 +407,7 @@ class TheGame{
 
 }
 
-
+//define the global variables
 let game;
 let mymap;
 let characterActionsToPreload = ['idle','idleblinking','walk','slash','throw','die'];
@@ -410,6 +415,8 @@ let imgHeight = 100;
 let ogY = 'empty';//using empty becouse 0 was a needed value
 let ogX = 'empty';//using empty becouse 0 was a needed value
 let drag = 'empty';//using empty becouse 0 was a needed value
+
+//character specific variables
 let maps = [ //defining all the maps and the floor height
   ['Wooded', 0],
   ['greenland', 150],
@@ -450,7 +457,7 @@ let actionEnemies = []; //store all characters
 let actionCharacters = []; //store all characters
 let allCharactersImgs = [];  //difine all characters images
 
-
+// Function to print text with a shadow effect and hover effect to make the work simple
 function printText(message, x, y, size, hover = false, color = 'red'){
   let space = size/40;
   textAlign(CENTER);
@@ -475,7 +482,7 @@ function printText(message, x, y, size, hover = false, color = 'red'){
   text(message, x, y);
 }
 
-
+// Function to create a clickable text that will return true if the mouse is on it and pressed
 function clickable(text, x, y, size, color){
   if (mouseX > x - textWidth(text)/2 && mouseX < x + textWidth(text)/2 && mouseY > y - 40 && mouseY < y + 5){
     printText(text, x, y, size, true);
@@ -488,7 +495,7 @@ function clickable(text, x, y, size, color){
   }
 }
 
-
+// Function to helo preload all the characters images
 function helpPreloadCharacters(fileName){
   let imgList = [];
   for(let file of characterActionsToPreload){
@@ -497,7 +504,7 @@ function helpPreloadCharacters(fileName){
   return imgList;
 }
 
-
+// Function to preload all the characters images and maps
 function preload(){
   for (let characterImg of characterImagesToPreloadAndSpicifcs){
     allCharactersImgs.push(helpPreloadCharacters(characterImg[0]));
@@ -507,7 +514,7 @@ function preload(){
   }
 }
 
-
+// Function to run in setup to create all the characters and their positions
 function runInSetup(){
   let space = 150;
   for(let character in allCharactersImgs){
@@ -516,7 +523,7 @@ function runInSetup(){
   }
 }
   
-
+// setup function to create the canvas and stuff
 function setup() {
   createCanvas(windowWidth, windowHeight);
   imageMode(CENTER);
@@ -524,12 +531,12 @@ function setup() {
   game = new TheGame();
 }
 
-
+// draw function to run the game
 function draw() {
   game.runTheGame();
 }
 
-
+//detect if the mouse is pressed and if it is on a character to drag it
 function mousePressed(){
   for(let character in allCharacters){
     if (dist(allCharacters[character].x, allCharacters[character].y-allCharacters[character].size/2, mouseX, mouseY)<allCharacters[character].size/3){
@@ -540,7 +547,7 @@ function mousePressed(){
   }
 }
 
-
+// detect if the mouse is released and if it is on a character to drop it
 function mouseReleased(){
   if (drag !== 'empty'){
     allCharacters[drag].x = ogX;
