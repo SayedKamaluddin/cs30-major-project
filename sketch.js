@@ -32,6 +32,7 @@ class Character{
   }
 
   showHealth(health, maxHealth, x, y, color) {
+    y -= this.size/2;
     stroke (0);
     strokeWeight(4);
     noFill();
@@ -59,16 +60,17 @@ class Character{
   }
 
   action(imgNum){
+    
     if (this.health < 0){
       this.health = 0;
     }
     if (this.diraction === 'r'){
-      image(this.img[imgNum], this.x, this.y, this.size, this.size, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
+      image(this.img[imgNum], this.x, this.y-this.size/2, this.size, this.size, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
     }
     if (this.diraction === 'l'){
       push();
       scale(-1, 1);
-      image(this.img[imgNum], -this.x, this.y, this.size, this.size, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
+      image(this.img[imgNum], -this.x, this.y-this.size/2, this.size, this.size, this.img[imgNum].height*floor(this.frame), 0, this.img[imgNum].height);
       pop();
     }
     if (this.frame*this.img[imgNum].height > this.img[imgNum].width-this.img[imgNum].height){
@@ -124,8 +126,6 @@ class Character{
 class TheGame{
   constructor(){
     this.mode = 'menu';
-    this.characterBaseHealth = 1000;
-    this.enemyBaseHealth = 1000;
     this.level = 1;
     this.coins = 5;
     this.enemyCoins = 0;
@@ -154,12 +154,12 @@ class TheGame{
 
   displayCharactersToSelect(){
     for(let character = 0; character <= Math.min(this.level, allCharacters.length - 1); character++){
-      if (dist(allCharacters[character].x, allCharacters[character].y, mouseX, mouseY)<allCharacters[character].size/3){
-        printText(allCharacters[character].price, allCharacters[character].x, allCharacters[character].y+allCharacters[character].size/2+10, 20, true);
+      if (dist(allCharacters[character].x, allCharacters[character].y-allCharacters[character].size/2, mouseX, mouseY)<allCharacters[character].size/3){
+        printText(allCharacters[character].price, allCharacters[character].x, allCharacters[character].y+10, 20, true);
         allCharacters[character].blink();
       }
       else{
-        printText(allCharacters[character].price, allCharacters[character].x, allCharacters[character].y+allCharacters[character].size/2+10, 20, false);
+        printText(allCharacters[character].price, allCharacters[character].x, allCharacters[character].y+10, 20, false);
         allCharacters[character].idle();
       }
     }
@@ -336,24 +336,70 @@ class TheGame{
 }
 
 
+class MapsAndBases{
+  constructor(ground, routs){
+    this.ground = ground;
+    if (routs){
+      this.routs = routs;
+    }
+    this.characterBaseHealth = 1000;
+    this.enemyBaseHealth = 1000;
+  }
+
+  bases(){
+    fill('brown');
+    rect(0, height/2+100, 100, 50);
+    fill('red');
+    rect(width-100, height/2+100, 100, 50);
+    fill('black');
+    textAlign(CENTER);
+    textSize(20);
+    text(this.characterBaseHealth, 50, height/2+130);
+    text(this.enemyBaseHealth, width-50, height/2+130);
+  }
+
+  showMap(){
+    let keys = Object.keys(maps);
+    let index = Math.min(game.level - 1, keys.length - 1);
+    if (game.mode === 'Normal Game' || game.mode === 'Cheat Mode'){
+      image(maps[keys[index]], width/2, height/2, width, height);
+      this.bases();
+    }
+    else{
+      image(maps[menu], width/2, height/2, width, height);
+    }
+    if (game.mode === 'Normal Game' || game.mode === 'Cheat Mode'){
+      for(let character of actionCharacters){
+        character.action(0);
+      }
+      for(let enemy of actionEnemies){
+        enemy.action(0);
+      }
+    }
+  }
+
+}
+
+
 let game;
+let mymap;
 let characterActionsToPreload = ['idle','idleblinking','walk','slash','throw','die'];
 let imgHeight = 100;
 let ogY = 'empty';//using empty becouse 0 was a needed value
 let ogX = 'empty';//using empty becouse 0 was a needed value
 let drag = 'empty';//using empty becouse 0 was a needed value
 let maps = { //defining all the maps
+  greenland : '',
   bamboo : '',
   castle : '',
   forest : '',
   sky : '',
-  greenland : '',
-  terrace : '',
   forest2d : '',
+  terrace : '',
+  menu : '',
 };
 let characterImagesToPreloadAndSpicifcs = [
 //      price, size, speed, strenght, health, hitZone
-  
   ['Reaper_Man_2', [10, 80, 0.7, 1000, 1, 'close']],
   ['goblin', [4, 100, 0.6, 15, 100, 'close']],
   ['skeleton_crusader_1', [6, 100, 0.6, 15, 100, 'close']],
@@ -414,17 +460,6 @@ function clickable(text, x, y, size, color){
 }
 
 
-function showMap(){
-  let keys = Object.keys(maps);
-  let index = Math.min(game.level - 1, keys.length - 1);
-  image(maps[keys[index]], width/2, height/2, width, height);
-  printText(game.characterBaseHealth, 100, 150, 50);
-  printText('Base Health', 100, 180, 20);
-  printText(game.enemyBaseHealth, width - 100, 150, 50);
-  printText('Enemy Base Health', width - 100, 180, 20);
-}
-
-
 function helpPreloadCharacters(fileName){
   let imgList = [];
   for(let file of characterActionsToPreload){
@@ -447,7 +482,7 @@ function preload(){
 function runInSetup(){
   let space = 150;
   for(let character in allCharactersImgs){
-    allCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[character][1][0], 100, 0.35, 50, 100, allCharactersImgs[character], space, 50, 'r', 10));
+    allCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[character][1][0], 100, 0.35, 50, 100, allCharactersImgs[character], space, 100, 'r', 10));
     space+=100;
   }
 }
@@ -458,21 +493,22 @@ function setup() {
   imageMode(CENTER);
   runInSetup();
   game = new TheGame();
+  mymap = new MapsAndBases(maps);
 }
 
 
 function draw() {
-  showMap();
+  mymap.showMap();
   game.runTheGame();
 }
 
 
 function mousePressed(){
   for(let character in allCharacters){
-    if (dist(allCharacters[character].x, allCharacters[character].y, mouseX, mouseY)<allCharacters[character].size/3){
+    if (dist(allCharacters[character].x, allCharacters[character].y-allCharacters[character].size/2, mouseX, mouseY)<allCharacters[character].size/3){
       drag = character;
       ogX = allCharacters[drag].x;
-      ogY = allCharacters[drag].y;
+      ogY = allCharacters[drag].y-allCharacters[character].size/2;
     }
   }
 }
@@ -481,20 +517,21 @@ function mousePressed(){
 function mouseReleased(){
   if (drag !== 'empty'){
     allCharacters[drag].x = ogX;
-    allCharacters[drag].y = ogY;
+    allCharacters[drag].y = ogY+allCharacters[drag].size/2;
+    let char = characterImagesToPreloadAndSpicifcs[drag][1];
     if (game.cheatmode){
-      if (mouseX < width /2 && game.coins >= characterImagesToPreloadAndSpicifcs[drag][1][0]){
-        game.coins -= characterImagesToPreloadAndSpicifcs[drag][1][0];
-        actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2+50,'r', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+      if (mouseX < width /2 && game.coins >= char[0]){
+        game.coins -= char[0];
+        actionCharacters.push(new Character(char[0] ,char[1], char[2], char[3], char[4],allCharactersImgs[drag],100,height/2+150,'r', char[5]));
       }
       if (mouseX > width /2) {
-        actionEnemies.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],width-100,height/2+50,'l', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+        actionEnemies.push(new Character(char[0] ,char[1], char[2], char[3], char[4],allCharactersImgs[drag],width-100,height/2+150,'l', char[5]));
       }
     }
     else{
-      if (mouseY>150 && game.coins >= characterImagesToPreloadAndSpicifcs[drag][1][0]){
-        game.coins -= characterImagesToPreloadAndSpicifcs[drag][1][0];
-        actionCharacters.push(new Character(characterImagesToPreloadAndSpicifcs[drag][1][0] ,characterImagesToPreloadAndSpicifcs[drag][1][1], characterImagesToPreloadAndSpicifcs[drag][1][2], characterImagesToPreloadAndSpicifcs[drag][1][3], characterImagesToPreloadAndSpicifcs[drag][1][4],allCharactersImgs[drag],100,height/2+50,'r', characterImagesToPreloadAndSpicifcs[drag][1][5]));
+      if (mouseY>150 && game.coins >= char[0]){
+        game.coins -= char[0];
+        actionCharacters.push(new Character(char[0] ,char[1], char[2], char[3], char[4],allCharactersImgs[drag],100,height/2+150,'r', char[5]));
       }
     }
     ogX = 'empty';
