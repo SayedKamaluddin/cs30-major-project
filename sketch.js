@@ -60,7 +60,6 @@ class Character{
   }
 
   action(imgNum){
-    
     if (this.health < 0){
       this.health = 0;
     }
@@ -126,11 +125,36 @@ class Character{
 class TheGame{
   constructor(){
     this.mode = 'menu';
+    this.msgtimer = 0;
     this.level = 1;
     this.coins = 5;
     this.enemyCoins = 0;
     this.counter = millis();
     this.cheatmode = false;
+    this.characterBaseHealth = 1000;
+    this.enemyBaseHealth = 1000;
+  }
+
+  showMap(){
+    if (game.mode === 'Normal Game' || game.mode === 'Cheat Mode'){
+      image(maps[game.level][2], width/2, height/2, width, height);
+      this.bases(maps[game.level][1]);
+    }
+    else{
+      image(maps[0][2], width/2, height/2, width, height);
+    }
+  }
+
+  bases(floor){
+    fill('green');
+    rect(0, floor, 100, 50);
+    fill('red');
+    rect(width-100, floor, 100, 50);
+    fill('black');
+    textAlign(CENTER);
+    textSize(20);
+    text(this.characterBaseHealth, 50, floor+20);
+    text(this.enemyBaseHealth, width-50, floor+20);
   }
 
   homeButton(){
@@ -148,7 +172,7 @@ class TheGame{
     if (random(1000)<game.level) {
       const rant = round(random(0,Math.min(this.level, allCharacters.length - 1)));
       const enm = characterImagesToPreloadAndSpicifcs[rant][1];
-      actionEnemies.push(new Character(enm[0] ,enm[1], enm[2], enm[3], enm[4],allCharactersImgs[rant],width-100,height/2+50,'l', enm[5]));
+      actionEnemies.push(new Character(enm[0] ,enm[1], enm[2], enm[3], enm[4],allCharactersImgs[rant],width-100,height/2+maps[this.level][1],'l', enm[5]));
     }
   }
 
@@ -233,17 +257,17 @@ class TheGame{
 
   controlPage(){
     printText('Controls', width/2, height/4, 100, false, [255, 81, 41]);
-    printText('The path to victory lies in ruin — destroy the enemy base before they reach yours.', width/2, height/4 + 100, 25, false, 'black');
-    printText('To do so, summon Wielders — ancient beings of might and will.', width/2, height/4 + 150, 25, false, 'black');
-    printText('Drag and drop a Wielder into the battlefield, and it shall obey your command.', width/2, height/4 + 200, 25, false, 'black');
-    printText('Each Wielder bears a price, etched faintly in the corner beneath them.', width/2, height/4 + 250, 25, false, 'black');
-    printText('You must possess enough coin to call them forth.', width/2, height/4 + 300, 25, false, 'black');
-    printText('Coins will trickle in with time — a gift of patience, or a trap for the reckless.', width/2, height/4 + 350, 25, false, 'black');
-    printText('But spend with care — each coin may shape what comes next.', width/2, height/4 + 400, 25, false, 'black');
-    printText('Some Wielders strike from afar, others clash face to face — choose your forces with intent.', width/2, height/4 + 450, 25, false, 'black');
-    printText('The shadows do not forgive poor judgment.', width/2, height/4 + 500, 25, false, 'black');
-    printText('When the enemy approaches, they will strike at your base — a fortress of stone and resolve.', width/2, height/4 + 550, 25, false, 'black');
-    printText('Guard it well, for if it falls, so too does your hope.', width/2, height/4 + 600, 25, false, 'black');
+    printText('The path to victory lies in ruin — destroy the enemy base before they reach yours.', width/2, height/4 + 100, 25, false, 'brown');
+    printText('To do so, summon Wielders — ancient beings of might and will.', width/2, height/4 + 150, 25, false, 'brown');
+    printText('Drag and drop a Wielder into the battlefield, and it shall obey your command.', width/2, height/4 + 200, 25, false, 'brown');
+    printText('Each Wielder bears a price, etched faintly in the corner beneath them.', width/2, height/4 + 250, 25, false, 'brown');
+    printText('You must possess enough coin to call them forth.', width/2, height/4 + 300, 25, false, 'brown');
+    printText('Coins will trickle in with time — a gift of patience, or a trap for the reckless.', width/2, height/4 + 350, 25, false, 'brown');
+    printText('But spend with care — each coin may shape what comes next.', width/2, height/4 + 400, 25, false, 'brown');
+    printText('Some Wielders strike from afar, others clash face to face — choose your forces with intent.', width/2, height/4 + 450, 25, false, 'brown');
+    printText('The shadows do not forgive poor judgment.', width/2, height/4 + 500, 25, false, 'brown');
+    printText('When the enemy approaches, they will strike at your base — a fortress of stone and resolve.', width/2, height/4 + 550, 25, false, 'brown');
+    printText('Guard it well, for if it falls, so too does your hope.', width/2, height/4 + 600, 25, false, 'brown');
     this.homeButton();
   }
 
@@ -251,7 +275,7 @@ class TheGame{
     printText('Levels', width/2, height/4, 100, false, [255, 81, 41]);
     let space = 50;
     for (let i = 1; i<= allCharacters.length; i++){
-      if (clickable(i, 200+space*i, height/4 + 100, 20, 'red')){
+      if (clickable(i, 200+space*i, height/4 + 100, 30, 'red')){
         this.level = i;
         this.mode = 'Normal Game';
       }
@@ -276,7 +300,7 @@ class TheGame{
     this.coinCounterAndOthers();
     this.gameAction();
     this.homeButton();
-    this.botSummons();
+    // this.botSummons();
   }
 
   startCheatGame(){
@@ -305,14 +329,51 @@ class TheGame{
     }
   }
 
+  lose(){
+    if (this.msgtimer < 60*5){
+      printText('You Lose', width/2, height/2, 100, false, 'red');
+      this.msgtimer++;
+    }
+    else{
+      this.msgtimer = 0;
+      this.level = 1;
+      this.coins = 5;
+      actionCharacters = [];
+      actionEnemies = [];
+      this.characterBaseHealth = 1000;
+      this.enemyBaseHealth = 1000;
+      this.mode = 'menu';
+    }
+  }
+
+  win(){
+    if (this.msgtimer < 60*5){
+      printText('You Win', width/2, height/2, 100, false, 'green');
+      this.msgtimer++;
+    }
+    else{
+      this.msgtimer = 0;
+      this.level++;
+      this.coins += 10;
+      actionCharacters = [];
+      actionEnemies = [];
+      this.characterBaseHealth = 1000;
+      this.enemyBaseHealth = 1000;
+      this.mode = 'Normal Game';
+    }
+  }
+
   runTheGame(){
+    this.showMap();
+    if (this.characterBaseHealth <= 0){
+      this.mode = 'lose';
+    }
+    else if (this.enemyBaseHealth <= 0){
+      this.mode = 'win';
+    }
     if (drag !== 'empty'){
       allCharacters[drag].x = mouseX;
       allCharacters[drag].y = mouseY;
-    }
-    if (this.level <= 0 || this.level > allCharacters.length - 1){
-      this.mode = 'menu';
-      this.level = 1;
     }
     if (this.mode === 'menu'){
       this.mainMenu();
@@ -330,53 +391,14 @@ class TheGame{
     else if (this.mode === 'Controls'){
       this.controlPage();
     }
-  }
-
-
-}
-
-
-class MapsAndBases{
-  constructor(ground, routs){
-    this.ground = ground;
-    if (routs){
-      this.routs = routs;
+    else if (this.mode === 'lose'){
+      this.lose();
     }
-    this.characterBaseHealth = 1000;
-    this.enemyBaseHealth = 1000;
-  }
-
-  bases(){
-    fill('brown');
-    rect(0, height/2+100, 100, 50);
-    fill('red');
-    rect(width-100, height/2+100, 100, 50);
-    fill('black');
-    textAlign(CENTER);
-    textSize(20);
-    text(this.characterBaseHealth, 50, height/2+130);
-    text(this.enemyBaseHealth, width-50, height/2+130);
-  }
-
-  showMap(){
-    let keys = Object.keys(maps);
-    let index = Math.min(game.level - 1, keys.length - 1);
-    if (game.mode === 'Normal Game' || game.mode === 'Cheat Mode'){
-      image(maps[keys[index]], width/2, height/2, width, height);
-      this.bases();
-    }
-    else{
-      image(maps.menu, width/2, height/2, width, height);
-    }
-    if (game.mode === 'Normal Game' || game.mode === 'Cheat Mode'){
-      for(let character of actionCharacters){
-        character.action(0);
-      }
-      for(let enemy of actionEnemies){
-        enemy.action(0);
-      }
+    else if (this.mode === 'win'){
+      this.win();
     }
   }
+
 
 }
 
@@ -388,33 +410,40 @@ let imgHeight = 100;
 let ogY = 'empty';//using empty becouse 0 was a needed value
 let ogX = 'empty';//using empty becouse 0 was a needed value
 let drag = 'empty';//using empty becouse 0 was a needed value
-let maps = { //defining all the maps
-  greenland : '',
-  bamboo : '',
-  castle : '',
-  forest : '',
-  sky : '',
-  forest2d : '',
-  terrace : '',
-  menu : '',
-};
+let maps = [ //defining all the maps and the floor height
+  ['Wooded', 0],
+  ['greenland', 150],
+  ['bamboo', 150],
+  ['castle', 150],
+  ['forest', 150],
+  ['ground', 200],
+  ['night-war', 200],
+  ['dora', 280],
+  ['sky', 150],
+  ['forest2d', 330],
+  ['terrace', 150],
+  ['approtis-dungeon', 200],
+  ['cartoon', 350],
+  ['darkerforest', 280],
+  ['streetfighter', 300],
+  ['vilage', 150],
+];
 let characterImagesToPreloadAndSpicifcs = [
 //      price, size, speed, strenght, health, hitZone
-  ['Reaper_Man_2', [10, 80, 0.7, 1000, 1, 'close']],
-  ['goblin', [4, 100, 0.6, 15, 100, 'close']],
-  ['skeleton_crusader_1', [6, 100, 0.6, 15, 100, 'close']],
-  ['Valkyrie_1', [6, 100, 0.8, 15, 100, 'close']],
-  ['fallen_angels_1', [10, 100, 0.6, 4, 100, 'far']],
-  ['fallen_angels_3', [5, 100, 0.6, 15, 100, 'far']],
-  // ['skeleton_crusader_3', [5, 100, 0.8, 15, 100, 'close']],
-  ['Valkyrie_2', [5, 100, 0.8, 15, 100, 'close']],
-  ['Valkyrie_3', [5, 100, 0.8, 15, 100, 'far']],
-  ['Reaper_Man_1', [5, 100, 0.6, 15, 100, 'close']],
-  ['ogre', [20, 130, 0.45, 30, 300, 'close']],
-  ['bolder1', [25, 150, 0.4, 50, 500, 'close']],
-  ['bolder2', [28, 180, 0.35, 75, 500, 'close']],
-  ['bolder3', [35, 200, 0.27, 100, 800, 'close']],
-  ['Zombie_Villager_1', [20, 100, 0.4, 5, 100, 'far']],
+['goblin', [4, 100, 3.6, 1005, 100, 'close']],
+['skeleton_crusader_1', [6, 100, 0.6, 15, 100, 'close']],
+['Valkyrie_1', [6, 100, 0.8, 15, 100, 'close']],
+['fallen_angels_1', [10, 100, 0.6, 4, 100, 'far']],
+['fallen_angels_3', [5, 100, 0.6, 15, 100, 'far']],
+['Valkyrie_2', [5, 100, 0.8, 15, 100, 'close']],
+['Valkyrie_3', [5, 100, 0.8, 15, 100, 'far']],
+['Reaper_Man_1', [5, 100, 0.6, 15, 100, 'close']],
+['ogre', [20, 130, 0.45, 30, 300, 'close']],
+['bolder1', [25, 150, 0.4, 50, 500, 'close']],
+['bolder2', [28, 180, 0.35, 75, 500, 'close']],
+['bolder3', [35, 200, 0.27, 100, 800, 'close']],
+['Zombie_Villager_1', [20, 100, 0.4, 5, 100, 'far']],
+['Reaper_Man_2', [10, 80, 0.7, 1000, 1, 'close']],
 ];
 let allCharacters = []; //store all characters
 let actionEnemies = []; //store all characters
@@ -473,8 +502,8 @@ function preload(){
   for (let characterImg of characterImagesToPreloadAndSpicifcs){
     allCharactersImgs.push(helpPreloadCharacters(characterImg[0]));
   }
-  for (let map in maps){
-    maps[map] = loadImage('maps\\'+map+'.png');
+  for (let map = 0; map < maps.length; map++){
+    maps[map].push(loadImage('maps\\'+maps[map][0]+'.png'));
   }
 }
 
@@ -493,12 +522,10 @@ function setup() {
   imageMode(CENTER);
   runInSetup();
   game = new TheGame();
-  mymap = new MapsAndBases(maps);
 }
 
 
 function draw() {
-  mymap.showMap();
   game.runTheGame();
 }
 
@@ -522,16 +549,16 @@ function mouseReleased(){
     if (game.cheatmode){
       if (mouseX < width /2 && game.coins >= char[0]){
         game.coins -= char[0];
-        actionCharacters.push(new Character(char[0] ,char[1], char[2], char[3], char[4],allCharactersImgs[drag],100,height/2+150,'r', char[5]));
+        actionCharacters.push(new Character(char[0] ,char[1], char[2], char[3], char[4],allCharactersImgs[drag],100,height/2+maps[game.level][1],'r', char[5]));
       }
       if (mouseX > width /2) {
-        actionEnemies.push(new Character(char[0] ,char[1], char[2], char[3], char[4],allCharactersImgs[drag],width-100,height/2+150,'l', char[5]));
+        actionEnemies.push(new Character(char[0] ,char[1], char[2], char[3], char[4],allCharactersImgs[drag],width-100,height/2+maps[game.level][1],'l', char[5]));
       }
     }
     else{
       if (mouseY>150 && game.coins >= char[0]){
         game.coins -= char[0];
-        actionCharacters.push(new Character(char[0] ,char[1], char[2], char[3], char[4],allCharactersImgs[drag],100,height/2+150,'r', char[5]));
+        actionCharacters.push(new Character(char[0] ,char[1], char[2], char[3], char[4],allCharactersImgs[drag],100,height/2+maps[game.level][1],'r', char[5]));
       }
     }
     ogX = 'empty';
