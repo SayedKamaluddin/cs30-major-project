@@ -280,17 +280,17 @@ class TheGame{
 
   controlPage(){
     printText('Controls', width/2, height/4, 100, false, [255, 81, 41]);
-    printText('The path to victory lies in ruin — destroy the enemy base before they reach yours.', width/2, height/4 + 100, 25, false, 'brown');
-    printText('To do so, summon Wielders — ancient beings of might and will.', width/2, height/4 + 150, 25, false, 'brown');
-    printText('Drag and drop a Wielder into the battlefield, and it shall obey your command.', width/2, height/4 + 200, 25, false, 'brown');
-    printText('Each Wielder bears a price, etched faintly in the corner beneath them.', width/2, height/4 + 250, 25, false, 'brown');
-    printText('You must possess enough coin to call them forth.', width/2, height/4 + 300, 25, false, 'brown');
-    printText('Coins will trickle in with time — a gift of patience, or a trap for the reckless.', width/2, height/4 + 350, 25, false, 'brown');
-    printText('But spend with care — each coin may shape what comes next.', width/2, height/4 + 400, 25, false, 'brown');
-    printText('Some Wielders strike from afar, others clash face to face — choose your forces with intent.', width/2, height/4 + 450, 25, false, 'brown');
-    printText('The shadows do not forgive poor judgment.', width/2, height/4 + 500, 25, false, 'brown');
-    printText('When the enemy approaches, they will strike at your base — a fortress of stone and resolve.', width/2, height/4 + 550, 25, false, 'brown');
-    printText('Guard it well, for if it falls, so too does your hope.', width/2, height/4 + 600, 25, false, 'brown');
+    printText('The path to victory lies in ruin — destroy the enemy base before they reach yours.', width/2, height/4 + 100, 25, false, 'yellow');
+    printText('To do so, summon Wielders — ancient beings of might and will.', width/2, height/4 + 150, 25, false, 'yellow');
+    printText('Drag and drop a Wielder into the battlefield, and it shall obey your command.', width/2, height/4 + 200, 25, false, 'yellow');
+    printText('Each Wielder bears a price, etched faintly in the corner beneath them.', width/2, height/4 + 250, 25, false, 'yellow');
+    printText('You must possess enough coin to call them forth.', width/2, height/4 + 300, 25, false, 'yellow');
+    printText('Coins will trickle in with time — a gift of patience, or a trap for the reckless.', width/2, height/4 + 350, 25, false, 'yellow');
+    printText('But spend with care — each coin may shape what comes next.', width/2, height/4 + 400, 25, false, 'yellow');
+    printText('Some Wielders strike from afar, others clash face to face — choose your forces with intent.', width/2, height/4 + 450, 25, false, 'yellow');
+    printText('The shadows do not forgive poor judgment.', width/2, height/4 + 500, 25, false, 'yellow');
+    printText('When the enemy approaches, they will strike at your base — a fortress of stone and resolve.', width/2, height/4 + 550, 25, false, 'yellow');
+    printText('Guard it well, for if it falls, so too does your hope.', width/2, height/4 + 600, 25, false, 'yellow');
     this.homeButton();
   }
 
